@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Voter Login</title>
+    <script type="module" src="login.js"></script>
+</head>
+<style>
+    body{
+        background-color: black;
+        margin-top: 0px;
+        margin-left: 4px;
+        margin-right: 4px;
+    }
+    .Phone{
+        margin-left: 4px;
+        margin-right: 4px;
+        display: flex;
+        justify-content: center;
+        font-family: Georgia, 'Times New Roman', Times, serif;
+
+
+    }
+    .Phone .button1{
+        margin-left: 4px;
+        margin-right: 4px;
+    }
+    .OTP{
+        display: flex;
+        justify-content: center;
+    }
+    .OTP .button2{
+        margin-left: 4px;
+        margin-right: 4px;
+    }
+    .header{
+        color: white;
+    }
+
+</style>
+<body>
+    <div class="header">
+        <h2>Voter Login</h2>
+    </div>
+    <div class="Phone">
+    
+    <input type="text" id="phone" placeholder="Enter Phone Number">
+    <button class="button1" onclick="sendOTP(document.getElementById('phone').value)">Send OTP</button>
+    </div>
+<br>
+<div class="OTP">
+    <input type="text" id="otp" placeholder="Enter OTP">
+    <button class="button2" onclick="verifyOTP(document.getElementById('otp').value)">Verify OTP</button>
+</div>
+    <div id="recaptcha-container"></div>
+</body>
+</html>

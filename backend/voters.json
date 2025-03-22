@@ -1,0 +1,452 @@
+[
+    {
+        "voterID": "DL10001",
+        "name": "Anil Mehta",
+        "age": 73,
+        "gender": "Male",
+        "constituency": "Dwarka",
+        "photoURL": "https://randomuser.me/api/portraits/men/24.jpg",
+        "checkedIn": false
+    },
+    {
+        "voterID": "DL10002",
+        "name": "Neha Gupta",
+        "age": 61,
+        "gender": "Female",
+        "constituency": "Greater Kailash",
+        "photoURL": "https://randomuser.me/api/portraits/women/40.jpg",
+        "checkedIn": false
+    },
+    {
+        "voterID": "DL10003",
+        "name": "Neha Gupta",
+        "age": 77,
+        "gender": "Female",
+        "constituency": "Rajouri Garden",
+        "photoURL": "https://randomuser.me/api/portraits/women/11.jpg",
+        "checkedIn": false
+    },
+    {
+        "voterID": "DL10004",
+        "name": "Vikram Singh",
+        "age": 24,
+        "gender": "Male",
+        "constituency": "Saket",
+        "photoURL": "https://randomuser.me/api/portraits/men/50.jpg",
+        "checkedIn": false
+    },
+    {
+        "voterID": "DL10005",
+        "name": "Anil Mehta",
+        "age": 43,
+        "gender": "Male",
+        "constituency": "Dwarka",
+        "photoURL": "https://randomuser.me/api/portraits/men/7.jpg",
+        "checkedIn": false
+    },
+    {
+        "voterID": "DL10006",
+        "name": "Rohan Sharma",
+        "age": 51,
+        "gender": "Male",
+        "constituency": "Greater Kailash",
+        "photoURL": "https://randomuser.me/api/portraits/men/34.jpg",
+        "checkedIn": false
+    },
+    {
+        "voterID": "DL10007",
+        "name": "Vikram Singh",
+        "age": 56,
+        "gender": "Male",
+        "constituency": "Rohini",
+        "photoURL": "https://randomuser.me/api/portraits/men/11.jpg",
+        "checkedIn": false
+    },
+    {
+        "voterID": "DL10008",
+        "name": "Neha Gupta",
+        "age": 61,
+        "gender": "Female",
+        "constituency": "New Delhi",
+        "photoURL": "https://randomuser.me/api/portraits/women/10.jpg",
+        "checkedIn": false
+    },
+    {
+        "voterID": "DL10009",
+        "name": "Ananya Roy",
+        "age": 62,
+        "gender": "Female",
+        "constituency": "Karol Bagh",
+        "photoURL": "https://randomuser.me/api/portraits/women/24.jpg",
+        "checkedIn": false
+    },
+    {
+        "voterID": "DL10010",
+        "name": "Amit Verma",
+        "age": 21,
+        "gender": "Male",
+        "constituency": "Patel Nagar",
+        "photoURL": "https://randomuser.me/api/portraits/men/27.jpg",
+        "checkedIn": false
+    },
+    {
+        "voterID": "DL10011",
+        "name": "Neha Gupta",
+        "age": 18,
+        "gender": "Female",
+        "constituency": "Dwarka",
+        "photoURL": "https://randomuser.me/api/portraits/women/37.jpg",
+        "checkedIn": false
+    },
+    {
+        "voterID": "DL10012",
+        "name": "Amit Verma",
+        "age": 77,
+        "gender": "Male",
+        "constituency": "New Delhi",
+        "photoURL": "https://randomuser.me/api/portraits/men/2.jpg",
+        "checkedIn": false
+    },
+    {
+        "voterID": "DL10013",
+        "name": "Neha Gupta",
+        "age": 60,
+        "gender": "Female",
+        "constituency": "Patel Nagar",
+        "photoURL": "https://randomuser.me/api/portraits/women/20.jpg",
+        "checkedIn": false
+    },
+    {
+        "voterID": "DL10014",
+        "name": "Meera Nair",
+        "age": 75,
+        "gender": "Female",
+        "constituency": "Rohini",
+        "photoURL": "https://randomuser.me/api/portraits/women/8.jpg",
+        "checkedIn": false
+    },
+    {
+        "voterID": "DL10015",
+        "name": "Neha Gupta",
+        "age": 33,
+        "gender": "Female",
+        "constituency": "Greater Kailash",
+        "photoURL": "https://randomuser.me/api/portraits/women/13.jpg",
+        "checkedIn": false
+    },
+    {
+        "voterID": "DL10016",
+        "name": "Kavita Joshi",
+        "age": 59,
+        "gender": "Female",
+        "constituency": "Patel Nagar",
+        "photoURL": "https://randomuser.me/api/portraits/women/3.jpg",
+        "checkedIn": false
+    },
+    {
+        "voterID": "DL10017",
+        "name": "Rohan Sharma",
+        "age": 34,
+        "gender": "Male",
+        "constituency": "Rajouri Garden",
+        "photoURL": "https://randomuser.me/api/portraits/men/20.jpg",
+        "checkedIn": false
+    },
+    {
+        "voterID": "DL10018",
+        "name": "Rohan Sharma",
+        "age": 45,
+        "gender": "Male",
+        "constituency": "New Delhi",
+        "photoURL": "https://randomuser.me/api/portraits/men/36.jpg",
+        "checkedIn": false
+    },
+    {
+        "voterID": "DL10019",
+        "name": "Neha Gupta",
+        "age": 57,
+        "gender": "Female",
+        "constituency": "Rohini",
+        "photoURL": "https://randomuser.me/api/portraits/women/41.jpg",
+        "checkedIn": false
+    },
+    {
+        "voterID": "DL10020",
+        "name": "Amit Verma",
+        "age": 45,
+        "gender": "Male",
+        "constituency": "Rohini",
+        "photoURL": "https://randomuser.me/api/portraits/men/44.jpg",
+        "checkedIn": false
+    },
+    {
+        "voterID": "DL10021",
+        "name": "Ananya Roy",
+        "age": 53,
+        "gender": "Female",
+        "constituency": "Karol Bagh",
+        "photoURL": "https://randomuser.me/api/portraits/women/29.jpg",
+        "checkedIn": false
+    },
+    {
+        "voterID": "DL10022",
+        "name": "Rajesh Kumar",
+        "age": 28,
+        "gender": "Male",
+        "constituency": "Chandni Chowk",
+        "photoURL": "https://randomuser.me/api/portraits/men/29.jpg",
+        "checkedIn": false
+    },
+    {
+        "voterID": "DL10023",
+        "name": "Priya Sharma",
+        "age": 26,
+        "gender": "Female",
+        "constituency": "Chandni Chowk",
+        "photoURL": "https://randomuser.me/api/portraits/women/1.jpg",
+        "checkedIn": false
+    },
+    {
+        "voterID": "DL10024",
+        "name": "Anil Mehta",
+        "age": 76,
+        "gender": "Male",
+        "constituency": "New Delhi",
+        "photoURL": "https://randomuser.me/api/portraits/men/3.jpg",
+        "checkedIn": false
+    },
+    {
+        "voterID": "DL10025",
+        "name": "Rohan Sharma",
+        "age": 74,
+        "gender": "Male",
+        "constituency": "Rajouri Garden",
+        "photoURL": "https://randomuser.me/api/portraits/men/42.jpg",
+        "checkedIn": false
+    },
+    {
+        "voterID": "DL10026",
+        "name": "Kavita Joshi",
+        "age": 46,
+        "gender": "Female",
+        "constituency": "Patel Nagar",
+        "photoURL": "https://randomuser.me/api/portraits/women/44.jpg",
+        "checkedIn": false
+    },
+    {
+        "voterID": "DL10027",
+        "name": "Priya Sharma",
+        "age": 80,
+        "gender": "Female",
+        "constituency": "Greater Kailash",
+        "photoURL": "https://randomuser.me/api/portraits/women/2.jpg",
+        "checkedIn": false
+    },
+    {
+        "voterID": "DL10028",
+        "name": "Neha Gupta",
+        "age": 69,
+        "gender": "Female",
+        "constituency": "Rajouri Garden",
+        "photoURL": "https://randomuser.me/api/portraits/women/9.jpg",
+        "checkedIn": false
+    },
+    {
+        "voterID": "DL10029",
+        "name": "Anil Mehta",
+        "age": 53,
+        "gender": "Male",
+        "constituency": "Chandni Chowk",
+        "photoURL": "https://randomuser.me/api/portraits/men/11.jpg",
+        "checkedIn": false
+    },
+    {
+        "voterID": "DL10030",
+        "name": "Meera Nair",
+        "age": 22,
+        "gender": "Female",
+        "constituency": "New Delhi",
+        "photoURL": "https://randomuser.me/api/portraits/women/10.jpg",
+        "checkedIn": false
+    },
+    {
+        "voterID": "DL10031",
+        "name": "Kavita Joshi",
+        "age": 36,
+        "gender": "Female",
+        "constituency": "Chandni Chowk",
+        "photoURL": "https://randomuser.me/api/portraits/women/10.jpg",
+        "checkedIn": false
+    },
+    {
+        "voterID": "DL10032",
+        "name": "Ananya Roy",
+        "age": 28,
+        "gender": "Female",
+        "constituency": "Dwarka",
+        "photoURL": "https://randomuser.me/api/portraits/women/39.jpg",
+        "checkedIn": false
+    },
+    {
+        "voterID": "DL10033",
+        "name": "Ananya Roy",
+        "age": 52,
+        "gender": "Female",
+        "constituency": "Laxmi Nagar",
+        "photoURL": "https://randomuser.me/api/portraits/women/41.jpg",
+        "checkedIn": false
+    },
+    {
+        "voterID": "DL10034",
+        "name": "Vikram Singh",
+        "age": 40,
+        "gender": "Male",
+        "constituency": "Saket",
+        "photoURL": "https://randomuser.me/api/portraits/men/42.jpg",
+        "checkedIn": false
+    },
+    {
+        "voterID": "DL10035",
+        "name": "Vikram Singh",
+        "age": 60,
+        "gender": "Male",
+        "constituency": "Patel Nagar",
+        "photoURL": "https://randomuser.me/api/portraits/men/19.jpg",
+        "checkedIn": false
+    },
+    {
+        "voterID": "DL10036",
+        "name": "Neha Gupta",
+        "age": 78,
+        "gender": "Female",
+        "constituency": "Karol Bagh",
+        "photoURL": "https://randomuser.me/api/portraits/women/11.jpg",
+        "checkedIn": false
+    },
+    {
+        "voterID": "DL10037",
+        "name": "Neha Gupta",
+        "age": 61,
+        "gender": "Female",
+        "constituency": "Saket",
+        "photoURL": "https://randomuser.me/api/portraits/women/34.jpg",
+        "checkedIn": false
+    },
+    {
+        "voterID": "DL10038",
+        "name": "Amit Verma",
+        "age": 25,
+        "gender": "Male",
+        "constituency": "Karol Bagh",
+        "photoURL": "https://randomuser.me/api/portraits/men/43.jpg",
+        "checkedIn": false
+    },
+    {
+        "voterID": "DL10039",
+        "name": "Meera Nair",
+        "age": 55,
+        "gender": "Female",
+        "constituency": "Greater Kailash",
+        "photoURL": "https://randomuser.me/api/portraits/women/18.jpg",
+        "checkedIn": false
+    },
+    {
+        "voterID": "DL10040",
+        "name": "Neha Gupta",
+        "age": 62,
+        "gender": "Female",
+        "constituency": "Patel Nagar",
+        "photoURL": "https://randomuser.me/api/portraits/women/32.jpg",
+        "checkedIn": false
+    },
+    {
+        "voterID": "DL10041",
+        "name": "Priya Sharma",
+        "age": 22,
+        "gender": "Female",
+        "constituency": "New Delhi",
+        "photoURL": "https://randomuser.me/api/portraits/women/6.jpg",
+        "checkedIn": false
+    },
+    {
+        "voterID": "DL10042",
+        "name": "Amit Verma",
+        "age": 18,
+        "gender": "Male",
+        "constituency": "Karol Bagh",
+        "photoURL": "https://randomuser.me/api/portraits/men/17.jpg",
+        "checkedIn": false
+    },
+    {
+        "voterID": "DL10043",
+        "name": "Meera Nair",
+        "age": 40,
+        "gender": "Female",
+        "constituency": "Laxmi Nagar",
+        "photoURL": "https://randomuser.me/api/portraits/women/22.jpg",
+        "checkedIn": false
+    },
+    {
+        "voterID": "DL10044",
+        "name": "Rajesh Kumar",
+        "age": 24,
+        "gender": "Male",
+        "constituency": "Chandni Chowk",
+        "photoURL": "https://randomuser.me/api/portraits/men/12.jpg",
+        "checkedIn": false
+    },
+    {
+        "voterID": "DL10045",
+        "name": "Anil Mehta",
+        "age": 66,
+        "gender": "Male",
+        "constituency": "Dwarka",
+        "photoURL": "https://randomuser.me/api/portraits/men/14.jpg",
+        "checkedIn": false
+    },
+    {
+        "voterID": "DL10046",
+        "name": "Amit Verma",
+        "age": 21,
+        "gender": "Male",
+        "constituency": "New Delhi",
+        "photoURL": "https://randomuser.me/api/portraits/men/4.jpg",
+        "checkedIn": false
+    },
+    {
+        "voterID": "DL10047",
+        "name": "Rohan Sharma",
+        "age": 18,
+        "gender": "Male",
+        "constituency": "Chandni Chowk",
+        "photoURL": "https://randomuser.me/api/portraits/men/4.jpg",
+        "checkedIn": false
+    },
+    {
+        "voterID": "DL10048",
+        "name": "Amit Verma",
+        "age": 80,
+        "gender": "Male",
+        "constituency": "Dwarka",
+        "photoURL": "https://randomuser.me/api/portraits/men/39.jpg",
+        "checkedIn": false
+    },
+    {
+        "voterID": "DL10049",
+        "name": "Meera Nair",
+        "age": 34,
+        "gender": "Female",
+        "constituency": "Patel Nagar",
+        "photoURL": "https://randomuser.me/api/portraits/women/38.jpg",
+        "checkedIn": false
+    },
+    {
+        "voterID": "DL10050",
+        "name": "Rajesh Kumar",
+        "age": 59,
+        "gender": "Male",
+        "constituency": "Karol Bagh",
+        "photoURL": "https://randomuser.me/api/portraits/men/7.jpg",
+        "checkedIn": false
+    }
+]
