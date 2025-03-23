@@ -4,6 +4,8 @@ import dotenv from "dotenv";
 import { checkVoter, verifyVoter } from "./verification.js"; // Import your verification logic
 
 dotenv.config();
+console.log("GOOGLE_APPLICATION_CREDENTIALS:", process.env.GOOGLE_APPLICATION_CREDENTIALS);
+console.log("GOOGLE_CREDENTIALS:", process.env.GOOGLE_CREDENTIALS ? "Loaded" : "Missing");
 const app = express();
 app.use(cors());
 app.use(express.json());
