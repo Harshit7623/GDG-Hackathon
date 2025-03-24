@@ -8,6 +8,17 @@ if (!admin.apps.length) {
 }
 
 const db = admin.firestore();
+async function checkFirestoreConnection() {
+    try {
+        console.log("🟢 Checking Firestore connection...");
+        const testDoc = await db.collection("Voters").limit(1).get();
+        console.log("✅ Firestore Connection Successful!");
+    } catch (error) {
+        console.error("🔥 Firestore Connection Failed:", error);
+    }
+}
+
+checkFirestoreConnection(); 
 
 export async function checkVoter(voterID) {
     if (!voterID) {
