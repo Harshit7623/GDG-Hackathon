@@ -1,17 +1,31 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import { checkVoter, verifyVoter } from "./verification.js"; // Import your verification logic
+import { checkVoter, verifyVoter } from "./verification.js"; // Import verification logic
+import fs from "fs"; // ✅ Import fs to read Firebase secret file
 
 dotenv.config();
 console.log("🟢 Checking Environment Variables...");
 console.log("GOOGLE_APPLICATION_CREDENTIALS:", process.env.GOOGLE_APPLICATION_CREDENTIALS ? "Set ✅" : "Not Set ❌");
-console.log("GOOGLE_CREDENTIALS:", process.env.GOOGLE_CREDENTIALS ? "Set ✅" : "Not Set ❌");
-console.log("Project ID:", process.env.GOOGLE_CREDENTIALS ? JSON.parse(process.env.GOOGLE_CREDENTIALS).project_id : "Not Found ❌");
+console.log("GOOGLE_CREDENTIALS:", process.env.GOOGLE_CREDENTIALS ? "Set ✅ (File Path ✅)" : "Not Set ❌");
+
+// 🔥 Read the Project ID from the Firebase Key File (Render Stores Secrets as File Paths)
+let projectId = "Not Found ❌";
+if (process.env.GOOGLE_CREDENTIALS) {
+    try {
+        const fileContents = fs.readFileSync(process.env.GOOGLE_CREDENTIALS, "utf8");
+        const credentials = JSON.parse(fileContents);
+        projectId = credentials.project_id || "Not Found ❌";
+    } catch (error) {
+        console.error("❌ Error reading Firebase credentials:", error);
+    }
+}
+console.log("Project ID:", projectId);
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+
 app.get("/", (req, res) => {
     res.send("Server is running! Use POST /verification to verify voters.");
 });
@@ -22,7 +36,6 @@ app.use((req, res, next) => {
     console.log("Request body:", req.body);
     next();
 });
-
 
 app.post("/verification", async (req, res) => {
     const { voterID } = req.body;
