@@ -5,33 +5,18 @@ const fs = require("fs");
 dotenv.config(); // Load environment variables
 
 let credentials;
+const localCredentialPath = process.env.GOOGLE_APPLICATION_CREDENTIALS; // Local: Path to key file
+const renderCredentialPath = process.env.GOOGLE_CREDENTIAL; // Render: Path to uploaded secret file
 
-// Check if running on Render (uses GOOGLE_CREDENTIALS)
-if (process.env.RENDER) {
-    console.log("🚀 Running on Render: Using `GOOGLE_CREDENTIALS`");
-
-    try {
-        const serviceAccountPath = process.env.GOOGLE_CREDENTIALS; // Path to secret file on Render
-        credentials = JSON.parse(fs.readFileSync(serviceAccountPath, "utf8"));
-    } catch (error) {
-        console.error("❌ Failed to load Render credentials:", error);
-        process.exit(1);
-    }
+if (renderCredentialPath && fs.existsSync(renderCredentialPath)) {
+    console.log("🚀 Running on Render: Using GOOGLE_CREDENTIAL ✅");
+    credentials = JSON.parse(fs.readFileSync(renderCredentialPath, "utf8"));
+} else if (localCredentialPath && fs.existsSync(localCredentialPath)) {
+    console.log("🖥️ Running Locally: Using GOOGLE_APPLICATION_CREDENTIALS ✅");
+    credentials = JSON.parse(fs.readFileSync(localCredentialPath, "utf8"));
 } else {
-    // Running locally (uses GOOGLE_APPLICATION_CREDENTIALS)
-    console.log("🖥️ Running Locally: Using `GOOGLE_APPLICATION_CREDENTIALS`");
-
-    if (!process.env.GOOGLE_APPLICATION_CREDENTIALS) {
-        console.error("❌ GOOGLE_APPLICATION_CREDENTIALS is not set!");
-        process.exit(1);
-    }
-
-    try {
-        credentials = require(process.env.GOOGLE_APPLICATION_CREDENTIALS);
-    } catch (error) {
-        console.error("❌ Error loading Firebase key file:", error);
-        process.exit(1);
-    }
+    console.error("❌ No valid Firebase credentials found!");
+    process.exit(1);
 }
 
 // ✅ Initialize Firebase Admin
