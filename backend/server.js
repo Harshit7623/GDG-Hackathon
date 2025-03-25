@@ -7,13 +7,13 @@ import fs from "fs"; // ✅ Import fs to read Firebase secret file
 dotenv.config();
 console.log("🟢 Checking Environment Variables...");
 console.log("GOOGLE_APPLICATION_CREDENTIALS:", process.env.GOOGLE_APPLICATION_CREDENTIALS ? "Set ✅" : "Not Set ❌");
-console.log("GOOGLE_CREDENTIALS:", process.env.GOOGLE_CREDENTIALS ? "Set ✅ (File Path ✅)" : "Not Set ❌");
+console.log("GOOGLE_CREDENTIAL:", process.env.GOOGLE_CREDENTIAL ? "Set ✅ (File Path ✅)" : "Not Set ❌");
 
 // 🔥 Read the Project ID from the Firebase Key File (Render Stores Secrets as File Paths)
 let projectId = "Not Found ❌";
-if (process.env.GOOGLE_CREDENTIALS) {
+if (process.env.GOOGLE_CREDENTIAL) {
     try {
-        const fileContents = fs.readFileSync(process.env.GOOGLE_CREDENTIALS, "utf8");
+        const fileContents = fs.readFileSync(process.env.GOOGLE_CREDENTIAL, "utf8");
         const credentials = JSON.parse(fileContents);
         projectId = credentials.project_id || "Not Found ❌";
     } catch (error) {
