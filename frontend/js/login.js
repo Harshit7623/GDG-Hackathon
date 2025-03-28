@@ -1,6 +1,8 @@
 import { auth } from '../firebase-config.js';
 import { RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
+console.log("Script started loading...");
+
 // Initialize reCAPTCHA verifier
 let recaptchaVerifier = null;
 
@@ -33,6 +35,55 @@ async function setupRecaptcha() {
     }
 }
 
+// Function to handle form submission
+async function handleSubmit(e) {
+    e.preventDefault();
+    console.log("Form submitted");
+    
+    const phoneNumber = document.getElementById('phoneNumber').value;
+    const submitBtn = document.getElementById('submitBtn');
+    
+    if (!phoneNumber) {
+        console.error("Phone number is required");
+        alert("Please enter your phone number");
+        return;
+    }
+    
+    try {
+        // Setup reCAPTCHA
+        await setupRecaptcha();
+        
+        // Show loading state
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Sending OTP...';
+        
+        console.log("Sending OTP to:", phoneNumber);
+        console.log("Using reCAPTCHA verifier:", recaptchaVerifier);
+        
+        // Send OTP
+        const confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, recaptchaVerifier);
+        
+        // Store the confirmation result
+        window.confirmationResult = confirmationResult;
+        
+        // Redirect to OTP verification page
+        window.location.href = 'otp.html';
+    } catch (error) {
+        console.error('Error sending OTP:', error);
+        alert('Error sending OTP. Please try again.');
+        
+        // Reset button state
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Send OTP';
+        
+        // Reset reCAPTCHA
+        if (recaptchaVerifier) {
+            recaptchaVerifier.clear();
+            recaptchaVerifier = null;
+        }
+    }
+}
+
 // Wait for DOM to be fully loaded
 document.addEventListener('DOMContentLoaded', () => {
     console.log("DOM loaded, setting up form handler...");
@@ -45,51 +96,17 @@ document.addEventListener('DOMContentLoaded', () => {
     
     console.log("Login form found, adding submit handler...");
     
-    loginForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        console.log("Form submitted");
-        
-        const phoneNumber = document.getElementById('phoneNumber').value;
-        const submitBtn = document.getElementById('submitBtn');
-        
-        if (!phoneNumber) {
-            console.error("Phone number is required");
-            alert("Please enter your phone number");
-            return;
-        }
-        
-        try {
-            // Setup reCAPTCHA
-            await setupRecaptcha();
-            
-            // Show loading state
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Sending OTP...';
-            
-            console.log("Sending OTP to:", phoneNumber);
-            console.log("Using reCAPTCHA verifier:", recaptchaVerifier);
-            
-            // Send OTP
-            const confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, recaptchaVerifier);
-            
-            // Store the confirmation result
-            window.confirmationResult = confirmationResult;
-            
-            // Redirect to OTP verification page
-            window.location.href = 'otp.html';
-        } catch (error) {
-            console.error('Error sending OTP:', error);
-            alert('Error sending OTP. Please try again.');
-            
-            // Reset button state
-            submitBtn.disabled = false;
-            submitBtn.textContent = 'Send OTP';
-            
-            // Reset reCAPTCHA
-            if (recaptchaVerifier) {
-                recaptchaVerifier.clear();
-                recaptchaVerifier = null;
-            }
-        }
-    });
+    // Add click event listener to the button as well
+    const submitBtn = document.getElementById('submitBtn');
+    if (submitBtn) {
+        submitBtn.addEventListener('click', (e) => {
+            console.log("Button clicked");
+            handleSubmit(e);
+        });
+    }
+    
+    // Add submit event listener to the form
+    loginForm.addEventListener('submit', handleSubmit);
+    
+    console.log("Event listeners attached successfully");
 }); 
