@@ -4,6 +4,7 @@ console.log("Firebase config script started loading...");
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -20,23 +21,13 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-let app;
-let auth;
-let analytics;
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const analytics = getAnalytics(app);
+const db = getFirestore(app);
 
-try {
-    app = initializeApp(firebaseConfig);
-    auth = getAuth(app);
-    analytics = getAnalytics(app);
-    
-    // Wait for auth to be fully initialized
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    console.log("Firebase initialized successfully");
-    console.log("Auth instance:", auth);
-} catch (error) {
-    console.error("Error initializing Firebase:", error);
-    throw error;
-}
+console.log("Firebase initialized successfully");
+console.log("Auth instance:", auth);
+console.log("Firestore instance:", db);
 
-export { app, auth, analytics };
+export { app, auth, analytics, db };

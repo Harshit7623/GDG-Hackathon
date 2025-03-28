@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voter ID Verification - Modern Voting Verification</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="login-form">
+            <h2>Voter ID Verification</h2>
+            <form id="voterVerificationForm">
+                <div class="form-group">
+                    <label for="voterId">Voter ID Number</label>
+                    <input type="text" id="voterId" name="voterId" required 
+                           placeholder="Enter your Voter ID number">
+                </div>
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" name="name" required 
+                           placeholder="Enter your full name as per Voter ID">
+                </div>
+                <div class="form-group">
+                    <label for="dob">Date of Birth</label>
+                    <input type="date" id="dob" name="dob" required>
+                </div>
+                <div class="form-group">
+                    <label for="constituency">Constituency</label>
+                    <input type="text" id="constituency" name="constituency" required 
+                           placeholder="Enter your constituency">
+                </div>
+                <button type="submit" id="verifyBtn">Verify Voter ID</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Load our scripts -->
+    <script type="module" src="js/voter-verification.js"></script>
+</body>
+</html> 

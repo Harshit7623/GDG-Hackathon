@@ -8,17 +8,18 @@ if (!admin.apps.length) {
 }
 
 const db = admin.firestore();
+
 async function checkFirestoreConnection() {
     try {
         console.log("🟢 Checking Firestore connection...");
-        const testDoc = await db.collection("Voters").limit(1).get();
+        const testDoc = await db.collection("voters").limit(1).get();
         console.log("✅ Firestore Connection Successful!");
     } catch (error) {
         console.error("🔥 Firestore Connection Failed:", error);
     }
 }
 
-checkFirestoreConnection(); 
+checkFirestoreConnection();
 
 export async function checkVoter(voterID) {
     if (!voterID) {
@@ -30,7 +31,7 @@ export async function checkVoter(voterID) {
 
     try {
         // Query Firestore for voter where voterID matches
-        const querySnapshot = await db.collection("Voters").where("voterID", "==", voterID).get();
+        const querySnapshot = await db.collection("voters").where("voterId", "==", voterID).get();
 
         if (querySnapshot.empty) {
             console.log("❌ No such voter found in Firestore!");
@@ -48,13 +49,12 @@ export async function checkVoter(voterID) {
     }
 }
 
-
 export async function verifyVoter(voterID) {
     try {
         console.log(`✅ Verifying voter with ID: ${voterID}`);
 
         // Find voter document where voterID matches
-        const querySnapshot = await db.collection("Voters").where("voterID", "==", voterID).get();
+        const querySnapshot = await db.collection("voters").where("voterId", "==", voterID).get();
 
         if (querySnapshot.empty) {
             console.log("❌ No such voter found!");
@@ -65,10 +65,21 @@ export async function verifyVoter(voterID) {
         const voterDoc = querySnapshot.docs[0];
         const voterRef = voterDoc.ref; // Reference to the voter document
 
+        // Check if voter is already verified
+        const voterData = voterDoc.data();
+        if (voterData.status === "verified") {
+            console.log("ℹ️ Voter already verified");
+            return { message: "Voter already verified" };
+        }
+
         // Update the document status to "verified"
-        await voterRef.update({ status: "verified" });
+        await voterRef.update({ 
+            status: "verified",
+            verifiedAt: admin.firestore.FieldValue.serverTimestamp()
+        });
         
         console.log("✅ Voter Verified Successfully!");
+        return { message: "Voter verified successfully" };
     } catch (error) {
         console.error("🔥 Error verifying voter:", error);
         throw new Error("Error verifying voter: " + error.message);
