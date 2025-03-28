@@ -38,6 +38,30 @@ async function setupRecaptcha() {
     }
 }
 
+// Function to send OTP
+async function sendOTP(phoneNumber) {
+    console.log("Starting OTP sending process...");
+    try {
+        // Setup reCAPTCHA
+        await setupRecaptcha();
+        
+        console.log("Sending OTP to:", phoneNumber);
+        console.log("Using reCAPTCHA verifier:", recaptchaVerifier);
+        
+        // Send OTP
+        const confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, recaptchaVerifier);
+        
+        // Store the confirmation result
+        window.confirmationResult = confirmationResult;
+        
+        console.log("OTP sent successfully!");
+        return confirmationResult;
+    } catch (error) {
+        console.error('Error sending OTP:', error);
+        throw error;
+    }
+}
+
 // Function to handle form submission
 async function handleSubmit(e) {
     e.preventDefault();
@@ -53,26 +77,17 @@ async function handleSubmit(e) {
     }
     
     try {
-        // Setup reCAPTCHA
-        await setupRecaptcha();
-        
         // Show loading state
         submitBtn.disabled = true;
         submitBtn.textContent = 'Sending OTP...';
         
-        console.log("Sending OTP to:", phoneNumber);
-        console.log("Using reCAPTCHA verifier:", recaptchaVerifier);
-        
         // Send OTP
-        const confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, recaptchaVerifier);
-        
-        // Store the confirmation result
-        window.confirmationResult = confirmationResult;
+        await sendOTP(phoneNumber);
         
         // Redirect to OTP verification page
         window.location.href = 'otp.html';
     } catch (error) {
-        console.error('Error sending OTP:', error);
+        console.error('Error in handleSubmit:', error);
         alert('Error sending OTP. Please try again.');
         
         // Reset button state
@@ -115,6 +130,12 @@ document.addEventListener('DOMContentLoaded', () => {
     
     console.log("Login form found, adding submit handler...");
     
+    // Add submit event listener to the form
+    loginForm.addEventListener('submit', (e) => {
+        console.log("Form submit event triggered");
+        handleSubmit(e);
+    });
+    
     // Add click event listener to the button
     const submitBtn = document.getElementById('submitBtn');
     if (submitBtn) {
@@ -126,9 +147,6 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
         console.error("Submit button not found!");
     }
-    
-    // Add submit event listener to the form
-    loginForm.addEventListener('submit', handleSubmit);
     
     console.log("All event listeners attached successfully");
 }); 
