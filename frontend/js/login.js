@@ -12,16 +12,13 @@ async function setupRecaptcha() {
             console.log("Setting up reCAPTCHA...");
             console.log("Auth instance in setupRecaptcha:", auth);
             
-            // Wait for auth to be fully initialized
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            
             // Create a new reCAPTCHA verifier
-            recaptchaVerifier = new RecaptchaVerifier('recaptcha-container', {
+            recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
                 size: 'invisible',
                 callback: (response) => {
                     console.log("reCAPTCHA verified");
                 }
-            }, auth);
+            });
             
             console.log("reCAPTCHA setup complete");
             console.log("reCAPTCHA verifier:", recaptchaVerifier);
