@@ -63,6 +63,8 @@ async function handleSubmit(e) {
     console.log("Form submitted");
     
     const phoneNumber = document.getElementById('phoneNumber').value;
+    console.log("Phone number entered:", phoneNumber);
+    
     const submitBtn = document.getElementById('submitBtn');
     
     if (!phoneNumber) {
@@ -126,22 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log("Login form found, adding submit handler...");
     
     // Add submit event listener to the form
-    loginForm.addEventListener('submit', (e) => {
-        console.log("Form submit event triggered");
-        handleSubmit(e);
-    });
-    
-    // Add click event listener to the button
-    const submitBtn = document.getElementById('submitBtn');
-    if (submitBtn) {
-        console.log("Submit button found");
-        submitBtn.addEventListener('click', (e) => {
-            console.log("Submit button clicked");
-            handleSubmit(e);
-        });
-    } else {
-        console.error("Submit button not found!");
-    }
+    loginForm.addEventListener('submit', handleSubmit);
     
     console.log("All event listeners attached successfully");
 }); 
