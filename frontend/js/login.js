@@ -1,3 +1,6 @@
+import { auth } from '../firebase-config.js';
+import { RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
 console.log("Script started loading...");
 
 // Initialize reCAPTCHA verifier
@@ -7,10 +10,10 @@ async function setupRecaptcha() {
     try {
         if (!recaptchaVerifier) {
             console.log("Setting up reCAPTCHA...");
-            console.log("Auth instance in setupRecaptcha:", firebase.auth());
+            console.log("Auth instance in setupRecaptcha:", auth);
             
             // Create a new reCAPTCHA verifier
-            recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+            recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
                 size: 'invisible',
                 callback: (response) => {
                     console.log("reCAPTCHA verified");
@@ -37,7 +40,7 @@ async function sendOTP(phoneNumber) {
         console.log("Using reCAPTCHA verifier:", recaptchaVerifier);
         
         // Send OTP
-        const confirmationResult = await firebase.auth().signInWithPhoneNumber(phoneNumber, recaptchaVerifier);
+        const confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, recaptchaVerifier);
         
         // Store the confirmation result
         window.confirmationResult = confirmationResult;
