@@ -1,7 +1,10 @@
+console.log("Script started loading...");
+
+// Import Firebase modules
 import { auth } from '../firebase-config.js';
 import { RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-console.log("Script started loading...");
+console.log("Firebase modules imported");
 
 // Initialize reCAPTCHA verifier
 let recaptchaVerifier = null;
@@ -84,10 +87,26 @@ async function handleSubmit(e) {
     }
 }
 
+// Function to test if the script is working
+function testScript() {
+    console.log("Test button clicked!");
+    alert("Script is working!");
+}
+
 // Wait for DOM to be fully loaded
 document.addEventListener('DOMContentLoaded', () => {
-    console.log("DOM loaded, setting up form handler...");
+    console.log("DOM loaded, setting up event handlers...");
     
+    // Test button handler
+    const testBtn = document.getElementById('testBtn');
+    if (testBtn) {
+        console.log("Test button found");
+        testBtn.addEventListener('click', testScript);
+    } else {
+        console.error("Test button not found!");
+    }
+    
+    // Form handler
     const loginForm = document.getElementById('loginForm');
     if (!loginForm) {
         console.error("Login form not found!");
@@ -96,17 +115,20 @@ document.addEventListener('DOMContentLoaded', () => {
     
     console.log("Login form found, adding submit handler...");
     
-    // Add click event listener to the button as well
+    // Add click event listener to the button
     const submitBtn = document.getElementById('submitBtn');
     if (submitBtn) {
+        console.log("Submit button found");
         submitBtn.addEventListener('click', (e) => {
-            console.log("Button clicked");
+            console.log("Submit button clicked");
             handleSubmit(e);
         });
+    } else {
+        console.error("Submit button not found!");
     }
     
     // Add submit event listener to the form
     loginForm.addEventListener('submit', handleSubmit);
     
-    console.log("Event listeners attached successfully");
+    console.log("All event listeners attached successfully");
 }); 

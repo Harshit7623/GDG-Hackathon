@@ -19,8 +19,15 @@
                 <div id="recaptcha-container"></div>
                 <button type="submit" id="submitBtn">Send OTP</button>
             </form>
+            <!-- Test button to verify script loading -->
+            <button id="testBtn" style="margin-top: 10px;">Test Button</button>
         </div>
     </div>
+    <!-- Load Firebase SDKs -->
+    <script type="module" src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js"></script>
+    <!-- Load our scripts -->
+    <script type="module" src="js/firebase-config.js"></script>
     <script type="module" src="js/login.js"></script>
 </body>
 </html> 
