@@ -8,13 +8,18 @@ function setupRecaptcha() {
     try {
         if (!recaptchaVerifier) {
             console.log("Setting up reCAPTCHA...");
-            recaptchaVerifier = new RecaptchaVerifier('recaptcha-container', {
+            console.log("Auth instance in setupRecaptcha:", auth);
+            
+            // Create a new reCAPTCHA verifier
+            recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
                 size: 'invisible',
                 callback: (response) => {
                     console.log("reCAPTCHA verified");
                 }
-            }, auth);
+            });
+            
             console.log("reCAPTCHA setup complete");
+            console.log("reCAPTCHA verifier:", recaptchaVerifier);
         }
     } catch (error) {
         console.error("Error setting up reCAPTCHA:", error);
@@ -38,6 +43,8 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
         submitBtn.textContent = 'Sending OTP...';
         
         console.log("Sending OTP to:", phoneNumber);
+        console.log("Using reCAPTCHA verifier:", recaptchaVerifier);
+        
         // Send OTP
         const confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, recaptchaVerifier);
         
