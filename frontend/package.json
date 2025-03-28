@@ -1,0 +1,12 @@
+{
+  "name": "voting-frontend",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "python -m http.server 5500",
+    "build": "node build.js"
+  },
+  "dependencies": {
+    "firebase": "^10.8.0"
+  }
+} 
