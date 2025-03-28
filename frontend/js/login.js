@@ -1,7 +1,11 @@
+// Add immediate console log to verify script loading
+console.log("Login script loaded");
+
+// Import Firebase modules
 import { auth } from '../firebase-config.js';
 import { RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-console.log("Script started loading...");
+console.log("Firebase modules imported");
 
 // Initialize reCAPTCHA verifier
 let recaptchaVerifier = null;
@@ -99,9 +103,9 @@ function testScript() {
     alert("Script is working!");
 }
 
-// Wait for DOM to be fully loaded
-document.addEventListener('DOMContentLoaded', () => {
-    console.log("DOM loaded, setting up event handlers...");
+// Function to setup event listeners
+function setupEventListeners() {
+    console.log("Setting up event listeners...");
     
     // Test button handler
     const testBtn = document.getElementById('testBtn');
@@ -140,4 +144,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     console.log("All event listeners attached successfully");
+}
+
+// Try to setup event listeners immediately
+console.log("Attempting to setup event listeners immediately...");
+setupEventListeners();
+
+// Also setup event listeners when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    console.log("DOM loaded, setting up event handlers...");
+    setupEventListeners();
 }); 
