@@ -18,12 +18,17 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
+let app;
+let auth;
+let analytics;
 
-// Initialize Firebase Authentication and get a reference to the service
-const auth = getAuth(app);
-
-// Initialize Analytics and get a reference to the service
-const analytics = getAnalytics(app);
+try {
+    app = initializeApp(firebaseConfig);
+    auth = getAuth(app);
+    analytics = getAnalytics(app);
+    console.log("Firebase initialized successfully");
+} catch (error) {
+    console.error("Error initializing Firebase:", error);
+}
 
 export { app, auth, analytics };

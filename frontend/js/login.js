@@ -2,15 +2,23 @@ import { auth } from '../firebase-config.js';
 import { RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
 // Initialize reCAPTCHA verifier
-let recaptchaVerifier;
+let recaptchaVerifier = null;
+
 function setupRecaptcha() {
-    if (!recaptchaVerifier) {
-        recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-            'size': 'invisible',
-            'callback': (response) => {
-                // reCAPTCHA solved, allow signInWithPhoneNumber.
-            }
-        });
+    try {
+        if (!recaptchaVerifier) {
+            console.log("Setting up reCAPTCHA...");
+            recaptchaVerifier = new RecaptchaVerifier('recaptcha-container', {
+                size: 'invisible',
+                callback: (response) => {
+                    console.log("reCAPTCHA verified");
+                }
+            }, auth);
+            console.log("reCAPTCHA setup complete");
+        }
+    } catch (error) {
+        console.error("Error setting up reCAPTCHA:", error);
+        throw error;
     }
 }
 
@@ -19,15 +27,17 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     
     const phoneNumber = document.getElementById('phoneNumber').value;
+    const submitBtn = document.getElementById('submitBtn');
     
     try {
         // Setup reCAPTCHA
-        setupRecaptcha();
+        await setupRecaptcha();
         
         // Show loading state
-        document.getElementById('submitBtn').disabled = true;
-        document.getElementById('submitBtn').textContent = 'Sending OTP...';
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Sending OTP...';
         
+        console.log("Sending OTP to:", phoneNumber);
         // Send OTP
         const confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, recaptchaVerifier);
         
@@ -41,12 +51,13 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
         alert('Error sending OTP. Please try again.');
         
         // Reset button state
-        document.getElementById('submitBtn').disabled = false;
-        document.getElementById('submitBtn').textContent = 'Send OTP';
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Send OTP';
         
         // Reset reCAPTCHA
         if (recaptchaVerifier) {
             recaptchaVerifier.clear();
+            recaptchaVerifier = null;
         }
     }
 }); 
