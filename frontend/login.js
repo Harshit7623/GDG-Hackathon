@@ -1,5 +1,5 @@
 import { auth } from './firebase-config.js';
-import { signInWithPhoneNumber, RecaptchaVerifier } from "firebase/auth";
+import { signInWithPhoneNumber, RecaptchaVerifier } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
 let confirmationResult;
 
