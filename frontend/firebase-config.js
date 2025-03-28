@@ -18,11 +18,23 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const analytics = getAnalytics(app);
+let app;
+let auth;
+let analytics;
 
-console.log("Firebase initialized successfully");
-console.log("Auth instance:", auth);
+try {
+    app = initializeApp(firebaseConfig);
+    auth = getAuth(app);
+    analytics = getAnalytics(app);
+    
+    // Wait for auth to be fully initialized
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    console.log("Firebase initialized successfully");
+    console.log("Auth instance:", auth);
+} catch (error) {
+    console.error("Error initializing Firebase:", error);
+    throw error;
+}
 
 export { app, auth, analytics };
