@@ -2,6 +2,9 @@
 <html>
 <head>
     <title>Voter Login</title>
+    <!-- Load Firebase config first -->
+    <script type="module" src="firebase-config.js"></script>
+    <!-- Then load the login script -->
     <script type="module" src="login.js"></script>
     <style>
         body {
@@ -101,7 +104,7 @@
                 <label for="phone">Phone Number:</label>
                 <input type="tel" id="phone" placeholder="Enter Phone Number with country code (e.g., +91)">
             </div>
-            <button onclick="sendOTP(document.getElementById('phone').value)">Send OTP</button>
+            <button id="send-otp-btn">Send OTP</button>
             <div id="recaptcha-container"></div>
             <div id="status" class="status"></div>
         </div>
@@ -117,7 +120,7 @@
                     <input type="text" class="otp-input" maxlength="1" data-index="5">
                 </div>
             </div>
-            <button onclick="verifyOTP()">Verify OTP</button>
+            <button id="verify-otp-btn">Verify OTP</button>
             <div id="otp-status" class="status"></div>
         </div>
     </div>

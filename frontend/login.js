@@ -15,7 +15,7 @@ function setupRecaptcha() {
         window.recaptchaVerifier = new RecaptchaVerifier('recaptcha-container', {
             size: 'normal',
             callback: () => {
-                // reCAPTCHA solved
+                console.log('reCAPTCHA solved');
             }
         }, auth);
     }
@@ -47,46 +47,66 @@ document.querySelectorAll('.otp-input').forEach(input => {
     });
 });
 
-window.sendOTP = async function(phoneNumber) {
-    if (!phoneNumber) {
-        showStatus("Please enter a phone number", false);
-        return;
-    }
+// Add event listeners when the DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    // Send OTP button
+    document.getElementById('send-otp-btn').addEventListener('click', async () => {
+        const phoneNumber = document.getElementById('phone').value;
+        console.log('Attempting to send OTP to:', phoneNumber);
+        
+        if (!phoneNumber) {
+            showStatus("Please enter a phone number", false);
+            return;
+        }
 
-    try {
-        setupRecaptcha();
-        confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, window.recaptchaVerifier);
-        showStatus("OTP sent successfully!", true);
-        document.getElementById('otp-section').style.display = 'block';
-        // Focus first OTP input
-        document.querySelector('.otp-input').focus();
-    } catch (error) {
-        console.error("Error sending OTP:", error);
-        showStatus(error.message || "Error sending OTP", false);
-        window.recaptchaVerifier.clear();
-    }
-};
+        try {
+            // Clear any existing reCAPTCHA
+            if (window.recaptchaVerifier) {
+                window.recaptchaVerifier.clear();
+            }
+            
+            setupRecaptcha();
+            console.log('reCAPTCHA setup complete');
+            
+            confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, window.recaptchaVerifier);
+            console.log('OTP sent successfully');
+            
+            showStatus("OTP sent successfully!", true);
+            document.getElementById('otp-section').style.display = 'block';
+            // Focus first OTP input
+            document.querySelector('.otp-input').focus();
+        } catch (error) {
+            console.error("Error sending OTP:", error);
+            showStatus(error.message || "Error sending OTP", false);
+            if (window.recaptchaVerifier) {
+                window.recaptchaVerifier.clear();
+            }
+        }
+    });
 
-window.verifyOTP = async function() {
-    // Get OTP from input fields
-    const otpInputs = document.querySelectorAll('.otp-input');
-    const otp = Array.from(otpInputs).map(input => input.value).join('');
-    
-    if (otp.length !== 6) {
-        showStatus("Please enter a valid 6-digit OTP", false, 'otp-status');
-        return;
-    }
+    // Verify OTP button
+    document.getElementById('verify-otp-btn').addEventListener('click', async () => {
+        // Get OTP from input fields
+        const otpInputs = document.querySelectorAll('.otp-input');
+        const otp = Array.from(otpInputs).map(input => input.value).join('');
+        
+        if (otp.length !== 6) {
+            showStatus("Please enter a valid 6-digit OTP", false, 'otp-status');
+            return;
+        }
 
-    try {
-        const result = await confirmationResult.confirm(otp);
-        console.log("User verified:", result.user);
-        showStatus("OTP verified successfully!", true, 'otp-status');
-        // Redirect to verification page after a short delay
-        setTimeout(() => {
-            window.location.href = "verification.html";
-        }, 1000);
-    } catch (error) {
-        console.error("OTP verification failed:", error);
-        showStatus(error.message || "Invalid OTP", false, 'otp-status');
-    }
-};
+        try {
+            console.log('Attempting to verify OTP');
+            const result = await confirmationResult.confirm(otp);
+            console.log("User verified:", result.user);
+            showStatus("OTP verified successfully!", true, 'otp-status');
+            // Redirect to verification page after a short delay
+            setTimeout(() => {
+                window.location.href = "verification.html";
+            }, 1000);
+        } catch (error) {
+            console.error("OTP verification failed:", error);
+            showStatus(error.message || "Invalid OTP", false, 'otp-status');
+        }
+    });
+});
