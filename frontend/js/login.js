@@ -103,9 +103,9 @@ function testScript() {
     alert("Script is working!");
 }
 
-// Function to setup event listeners
-function setupEventListeners() {
-    console.log("Setting up event listeners...");
+// Wait for DOM to be fully loaded
+document.addEventListener('DOMContentLoaded', () => {
+    console.log("DOM loaded, setting up event handlers...");
     
     // Test button handler
     const testBtn = document.getElementById('testBtn');
@@ -144,14 +144,4 @@ function setupEventListeners() {
     }
     
     console.log("All event listeners attached successfully");
-}
-
-// Try to setup event listeners immediately
-console.log("Attempting to setup event listeners immediately...");
-setupEventListeners();
-
-// Also setup event listeners when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-    console.log("DOM loaded, setting up event handlers...");
-    setupEventListeners();
 }); 
