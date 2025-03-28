@@ -26,4 +26,4 @@ const auth = getAuth(app);
 // Initialize Analytics and get a reference to the service
 const analytics = getAnalytics(app);
 
-export { auth, analytics };
+export { app, auth, analytics };
