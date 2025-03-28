@@ -33,44 +33,63 @@ async function setupRecaptcha() {
     }
 }
 
-// Handle form submission
-document.getElementById('loginForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
+// Wait for DOM to be fully loaded
+document.addEventListener('DOMContentLoaded', () => {
+    console.log("DOM loaded, setting up form handler...");
     
-    const phoneNumber = document.getElementById('phoneNumber').value;
-    const submitBtn = document.getElementById('submitBtn');
-    
-    try {
-        // Setup reCAPTCHA
-        await setupRecaptcha();
-        
-        // Show loading state
-        submitBtn.disabled = true;
-        submitBtn.textContent = 'Sending OTP...';
-        
-        console.log("Sending OTP to:", phoneNumber);
-        console.log("Using reCAPTCHA verifier:", recaptchaVerifier);
-        
-        // Send OTP
-        const confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, recaptchaVerifier);
-        
-        // Store the confirmation result
-        window.confirmationResult = confirmationResult;
-        
-        // Redirect to OTP verification page
-        window.location.href = 'otp.html';
-    } catch (error) {
-        console.error('Error sending OTP:', error);
-        alert('Error sending OTP. Please try again.');
-        
-        // Reset button state
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Send OTP';
-        
-        // Reset reCAPTCHA
-        if (recaptchaVerifier) {
-            recaptchaVerifier.clear();
-            recaptchaVerifier = null;
-        }
+    const loginForm = document.getElementById('loginForm');
+    if (!loginForm) {
+        console.error("Login form not found!");
+        return;
     }
+    
+    console.log("Login form found, adding submit handler...");
+    
+    loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        console.log("Form submitted");
+        
+        const phoneNumber = document.getElementById('phoneNumber').value;
+        const submitBtn = document.getElementById('submitBtn');
+        
+        if (!phoneNumber) {
+            console.error("Phone number is required");
+            alert("Please enter your phone number");
+            return;
+        }
+        
+        try {
+            // Setup reCAPTCHA
+            await setupRecaptcha();
+            
+            // Show loading state
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Sending OTP...';
+            
+            console.log("Sending OTP to:", phoneNumber);
+            console.log("Using reCAPTCHA verifier:", recaptchaVerifier);
+            
+            // Send OTP
+            const confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, recaptchaVerifier);
+            
+            // Store the confirmation result
+            window.confirmationResult = confirmationResult;
+            
+            // Redirect to OTP verification page
+            window.location.href = 'otp.html';
+        } catch (error) {
+            console.error('Error sending OTP:', error);
+            alert('Error sending OTP. Please try again.');
+            
+            // Reset button state
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Send OTP';
+            
+            // Reset reCAPTCHA
+            if (recaptchaVerifier) {
+                recaptchaVerifier.clear();
+                recaptchaVerifier = null;
+            }
+        }
+    });
 }); 
