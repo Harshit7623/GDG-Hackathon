@@ -29,18 +29,29 @@ export async function checkVoter(voterId) {
     console.log(`🔍 Checking voter with ID: ${voterId}`);
 
     try {
-        // Query Firestore for voter where voterId matches
-        const querySnapshot = await db.collection("Voters").where("voterID", "==", voterId).get();
+        // Query Firestore for voter where either voterID or voterId matches
+        const querySnapshot = await db.collection("Voters")
+            .where("voterID", "==", voterId)
+            .get();
 
         if (querySnapshot.empty) {
-            console.log("❌ No such voter found in Firestore!");
-            return null;
+            // Try with lowercase 'd' if uppercase 'ID' didn't find anything
+            const altQuerySnapshot = await db.collection("Voters")
+                .where("voterId", "==", voterId)
+                .get();
+
+            if (altQuerySnapshot.empty) {
+                console.log("❌ No such voter found in Firestore!");
+                return null;
+            }
+
+            const voterDoc = altQuerySnapshot.docs[0];
+            console.log("✅ Voter Found:", voterDoc.data());
+            return voterDoc.data();
         }
 
-        // Since voterId is unique, we take the first result
         const voterDoc = querySnapshot.docs[0];
         console.log("✅ Voter Found:", voterDoc.data());
-
         return voterDoc.data();
     } catch (error) {
         console.error("🔥 Error fetching voter data:", error);
@@ -52,20 +63,32 @@ export async function verifyVoter(voterId) {
     try {
         console.log(`✅ Verifying voter with ID: ${voterId}`);
 
-        // Find voter document where voterId matches
-        const querySnapshot = await db.collection("Voters").where("voterID", "==", voterId).get();
+        // Find voter document where either voterID or voterId matches
+        const querySnapshot = await db.collection("Voters")
+            .where("voterID", "==", voterId)
+            .get();
 
+        let voterDoc;
         if (querySnapshot.empty) {
-            console.log("❌ No such voter found!");
-            throw new Error("Voter not found");
+            // Try with lowercase 'd' if uppercase 'ID' didn't find anything
+            const altQuerySnapshot = await db.collection("Voters")
+                .where("voterId", "==", voterId)
+                .get();
+
+            if (altQuerySnapshot.empty) {
+                console.log("❌ No such voter found!");
+                throw new Error("Voter not found");
+            }
+
+            voterDoc = altQuerySnapshot.docs[0];
+        } else {
+            voterDoc = querySnapshot.docs[0];
         }
 
-        // Since voterId is unique, we get the first document found
-        const voterDoc = querySnapshot.docs[0];
-        const voterRef = voterDoc.ref; // Reference to the voter document
+        const voterRef = voterDoc.ref;
+        const voterData = voterDoc.data();
 
         // Check if voter is already verified
-        const voterData = voterDoc.data();
         if (voterData.status === "verified") {
             console.log("ℹ️ Voter already verified");
             return { message: "Voter already verified" };

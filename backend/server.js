@@ -64,22 +64,22 @@ app.use((req, res, next) => {
 
 // Voter verification endpoint
 app.post("/verify-voter", async (req, res) => {
-    const { voterId } = req.body;
-
-    if (!voterId) {
-        return res.status(400).json({ error: "Voter ID is required" });
-    }
-
     try {
-        const voterData = await checkVoter(voterId);
-        if (!voterData) {
-            return res.status(404).json({ error: "Voter not found" });
+        console.log("Received POST request to /verify-voter");
+        console.log("Request body:", req.body);
+
+        // Handle both voterId and voterID in request body
+        const voterId = req.body.voterId || req.body.voterID;
+        
+        if (!voterId) {
+            console.error("❌ Error: Missing voterId in request body");
+            return res.status(400).json({ error: "Voter ID is required" });
         }
 
-        await verifyVoter(voterId);
-        res.json({ message: "Voter verified successfully" });
+        const result = await verifyVoter(voterId);
+        res.json(result);
     } catch (error) {
-        console.error("Verification error:", error);
+        console.error("🔥 Error in /verify-voter endpoint:", error);
         res.status(500).json({ error: error.message });
     }
 });
