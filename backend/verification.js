@@ -30,7 +30,7 @@ export async function checkVoter(voterId) {
 
     try {
         // Query Firestore for voter where voterId matches
-        const querySnapshot = await db.collection("Voters").where("voterId", "==", voterId).get();
+        const querySnapshot = await db.collection("Voters").where("voterID", "==", voterId).get();
 
         if (querySnapshot.empty) {
             console.log("❌ No such voter found in Firestore!");
@@ -53,7 +53,7 @@ export async function verifyVoter(voterId) {
         console.log(`✅ Verifying voter with ID: ${voterId}`);
 
         // Find voter document where voterId matches
-        const querySnapshot = await db.collection("Voters").where("voterId", "==", voterId).get();
+        const querySnapshot = await db.collection("Voters").where("voterID", "==", voterId).get();
 
         if (querySnapshot.empty) {
             console.log("❌ No such voter found!");
