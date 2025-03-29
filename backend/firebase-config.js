@@ -1,10 +1,11 @@
-const admin = require("firebase-admin");
-const dotenv = require("dotenv");
-const fs = require("fs");
+import admin from "firebase-admin";
+import dotenv from "dotenv";
+import fs from "fs";
 
 dotenv.config(); // Load environment variables
 
 let credentials;
+let db;
 
 try {
     // First try to get credentials from environment variable
@@ -40,11 +41,11 @@ try {
         console.log("✅ Firebase Admin initialized successfully!");
     }
 
-    const db = admin.firestore();
+    db = admin.firestore();
     console.log("🟢 Firestore connected!");
-
-    module.exports = { admin, db };
 } catch (error) {
     console.error("❌ Error initializing Firebase:", error.message);
     process.exit(1);
 }
+
+export { admin, db };

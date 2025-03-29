@@ -8,11 +8,10 @@ if (!admin.apps.length) {
 }
 
 const db = admin.firestore();
-
 async function checkFirestoreConnection() {
     try {
         console.log("🟢 Checking Firestore connection...");
-        const testDoc = await db.collection("voters").limit(1).get();
+        const testDoc = await db.collection("Voters").limit(1).get();
         console.log("✅ Firestore Connection Successful!");
     } catch (error) {
         console.error("🔥 Firestore Connection Failed:", error);
@@ -21,24 +20,24 @@ async function checkFirestoreConnection() {
 
 checkFirestoreConnection();
 
-export async function checkVoter(voterID) {
-    if (!voterID) {
-        console.error("❌ Error: Missing voterID");
+export async function checkVoter(voterId) {
+    if (!voterId) {
+        console.error("❌ Error: Missing voterId");
         throw new Error("Voter ID is required");
     }
 
-    console.log(`🔍 Checking voter with ID: ${voterID}`);
+    console.log(`🔍 Checking voter with ID: ${voterId}`);
 
     try {
-        // Query Firestore for voter where voterID matches
-        const querySnapshot = await db.collection("voters").where("voterId", "==", voterID).get();
+        // Query Firestore for voter where voterId matches
+        const querySnapshot = await db.collection("Voters").where("voterId", "==", voterId).get();
 
         if (querySnapshot.empty) {
             console.log("❌ No such voter found in Firestore!");
             return null;
         }
 
-        // Since voterID is unique, we take the first result
+        // Since voterId is unique, we take the first result
         const voterDoc = querySnapshot.docs[0];
         console.log("✅ Voter Found:", voterDoc.data());
 
@@ -49,19 +48,19 @@ export async function checkVoter(voterID) {
     }
 }
 
-export async function verifyVoter(voterID) {
+export async function verifyVoter(voterId) {
     try {
-        console.log(`✅ Verifying voter with ID: ${voterID}`);
+        console.log(`✅ Verifying voter with ID: ${voterId}`);
 
-        // Find voter document where voterID matches
-        const querySnapshot = await db.collection("voters").where("voterId", "==", voterID).get();
+        // Find voter document where voterId matches
+        const querySnapshot = await db.collection("Voters").where("voterId", "==", voterId).get();
 
         if (querySnapshot.empty) {
             console.log("❌ No such voter found!");
             throw new Error("Voter not found");
         }
 
-        // Since voterID is unique, we get the first document found
+        // Since voterId is unique, we get the first document found
         const voterDoc = querySnapshot.docs[0];
         const voterRef = voterDoc.ref; // Reference to the voter document
 

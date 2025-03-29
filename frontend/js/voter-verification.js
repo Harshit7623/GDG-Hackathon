@@ -4,7 +4,7 @@ import { collection, query, where, getDocs } from "https://www.gstatic.com/fireb
 console.log("Voter verification script loaded");
 
 // API endpoint - will be replaced during build
-const API_URL = window.API_URL || 'http://localhost:5000';
+const API_URL = window.API_URL || 'http://localhost:5001';
 
 // Function to verify voter ID through backend API
 async function verifyVoterBackend(voterId) {
