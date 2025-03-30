@@ -19,16 +19,15 @@ async function verifyVoterBackend(voterId) {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ 
-                voterId: voterId,
-                voterID: voterId  // Adding both formats to ensure compatibility
-            })
+            body: JSON.stringify({ voterId })
         });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
 
         const data = await response.json();
         console.log("Backend verification response:", data);
-
-        // Return the data regardless of HTTP status code
         return data;
     } catch (error) {
         console.error("Backend verification error:", error);
@@ -111,12 +110,11 @@ async function handleSubmit(e) {
                 window.location.href = 'dashboard.html';
             }, 1500);
         } else {
-            // Show the message from the backend
-            showStatus(result.message, false);
+            showStatus(result.error || "Verification failed", false);
         }
     } catch (error) {
         console.error('Error in handleSubmit:', error);
-        showStatus('Error connecting to server. Please try again.', false);
+        showStatus(error.message || 'Error verifying voter ID. Please try again.', false);
     } finally {
         // Reset button state
         submitBtn.disabled = false;
@@ -134,13 +132,7 @@ function showStatus(message, isSuccess) {
     
     statusDiv.textContent = message;
     statusDiv.style.display = "block";
-    
-    // Use info style for not found cases, success for verified, error for other cases
-    if (message.includes("not registered")) {
-        statusDiv.className = 'status info';
-    } else {
-        statusDiv.className = `status ${isSuccess ? 'success' : 'error'}`;
-    }
+    statusDiv.className = `status ${isSuccess ? 'success' : 'error'}`;
 }
 
 // Wait for DOM to be fully loaded

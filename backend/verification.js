@@ -23,48 +23,43 @@ async function checkFirestoreConnection() {
     }
 }
 
-// Function to check if a voter exists
-async function checkVoter(voterId) {
+// Check if voter exists
+export async function checkVoter(voterId) {
+    if (!voterId) {
+        console.error("❌ Error: Missing voterId");
+        throw new Error("Voter ID is required");
+    }
+
+    console.log(`🔍 Checking voter with ID: ${voterId}`);
+
     try {
-        if (!voterId) {
-            return {
-                success: false,
-                message: "Voter ID is required"
-            };
-        }
+        // Query Firestore for voter where either voterID or voterId matches
+        const querySnapshot = await db.collection("Voters")
+            .where("voterID", "==", voterId)
+            .get();
 
-        // Try with original case first
-        let voterDoc = await db.collection("Voters").doc(voterId).get();
-        
-        // If not found, try with different case
-        if (!voterDoc.exists) {
-            // Try with voterID (capital ID)
-            voterDoc = await db.collection("Voters").doc(voterId.replace('Id', 'ID')).get();
-            
-            // If still not found, try with voterId (lowercase id)
-            if (!voterDoc.exists) {
-                voterDoc = await db.collection("Voters").doc(voterId.replace('ID', 'Id')).get();
+        if (querySnapshot.empty) {
+            // Try with lowercase 'd' if uppercase 'ID' didn't find anything
+            const altQuerySnapshot = await db.collection("Voters")
+                .where("voterId", "==", voterId)
+                .get();
+
+            if (altQuerySnapshot.empty) {
+                console.log("❌ No such voter found in Firestore!");
+                return null;
             }
+
+            const voterDoc = altQuerySnapshot.docs[0];
+            console.log("✅ Voter Found:", voterDoc.data());
+            return voterDoc.data();
         }
 
-        if (!voterDoc.exists) {
-            console.log("Voter not found in database");
-            return {
-                success: false,
-                message: "Voter not found in database"
-            };
-        }
-
-        return {
-            success: true,
-            data: voterDoc.data()
-        };
+        const voterDoc = querySnapshot.docs[0];
+        console.log("✅ Voter Found:", voterDoc.data());
+        return voterDoc.data();
     } catch (error) {
-        console.error("Error checking voter:", error);
-        return {
-            success: false,
-            message: "Error checking voter status"
-        };
+        console.error("🔥 Error fetching voter data:", error);
+        throw new Error("Error fetching voter data: " + error.message);
     }
 }
 
