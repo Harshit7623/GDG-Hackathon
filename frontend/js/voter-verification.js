@@ -1,40 +1,62 @@
 import { db } from '../firebase-config.js';
-import { collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { collection, query, where, getDocs, doc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 console.log("Voter verification script loaded");
 
-// API endpoint configuration
-const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-    ? 'http://localhost:5001'
-    : 'https://your-backend-url.onrender.com';
-
-console.log("Using API URL:", API_URL);
-
-// Function to verify voter ID through backend API
-async function verifyVoterBackend(voterId) {
+// Function to verify voter ID directly through Firestore
+async function verifyVoterDirect(voterId) {
     try {
-        console.log("Verifying voter ID with backend:", voterId);
-        const response = await fetch(`${API_URL}/verify-voter`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ voterId })
-        });
+        console.log("Verifying voter ID directly:", voterId);
+        
+        // Query Firestore for voter where either voterID or voterId matches
+        const votersRef = collection(db, "Voters");
+        const q = query(votersRef, where("voterID", "==", voterId));
+        const querySnapshot = await getDocs(q);
 
-        console.log("Response status:", response.status);
-        const data = await response.json();
-        console.log("Raw backend response:", data);
-
-        // Only throw error for server errors (500+), not for 404
-        if (response.status >= 500) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+        let voterDoc;
+        if (querySnapshot.empty) {
+            // Try with lowercase 'd' if uppercase 'ID' didn't find anything
+            const altQuery = query(votersRef, where("voterId", "==", voterId));
+            const altSnapshot = await getDocs(altQuery);
+            
+            if (altSnapshot.empty) {
+                console.log("❌ No such voter found in Firestore!");
+                return { success: false, message: "Voter not found in database" };
+            }
+            voterDoc = altSnapshot.docs[0];
+        } else {
+            voterDoc = querySnapshot.docs[0];
         }
 
-        return data;
+        const voterData = voterDoc.data();
+        console.log("Found voter data:", voterData);
+
+        // Check if voter is already verified
+        if (voterData.status === "verified") {
+            console.log("ℹ️ Voter already verified");
+            return { 
+                success: true, 
+                message: "Voter already verified",
+                data: voterData
+            };
+        }
+
+        // Update the document status to "verified"
+        const voterRef = doc(db, "Voters", voterDoc.id);
+        await updateDoc(voterRef, { 
+            status: "verified",
+            verifiedAt: serverTimestamp()
+        });
+        
+        console.log("✅ Voter Verified Successfully!");
+        return { 
+            success: true, 
+            message: "Voter verified successfully",
+            data: voterData
+        };
     } catch (error) {
-        console.error("Backend verification error:", error);
-        throw error;
+        console.error("Error verifying voter:", error);
+        return { success: false, message: error.message };
     }
 }
 
@@ -57,8 +79,8 @@ async function handleSubmit(e) {
         
         console.log("Verifying voter ID:", voterId);
         
-        // Verify through backend
-        const result = await verifyVoterBackend(voterId);
+        // Verify directly through Firestore
+        const result = await verifyVoterDirect(voterId);
         console.log("Verification result:", result);
         
         if (result.success) {
@@ -80,7 +102,7 @@ async function handleSubmit(e) {
         }
     } catch (error) {
         console.error('Error in handleSubmit:', error);
-        showStatus('Server error. Please try again later.', false);
+        showStatus('Error verifying voter ID. Please try again.', false);
     } finally {
         // Reset button state
         submitBtn.disabled = false;
