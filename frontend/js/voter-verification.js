@@ -22,12 +22,14 @@ async function verifyVoterBackend(voterId) {
             body: JSON.stringify({ voterId })
         });
 
+        console.log("Response status:", response.status);
+        const data = await response.json();
+        console.log("Raw backend response:", data);
+
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        const data = await response.json();
-        console.log("Backend verification response:", data);
         return data;
     } catch (error) {
         console.error("Backend verification error:", error);
@@ -96,6 +98,7 @@ async function handleSubmit(e) {
         
         // Verify through backend
         const result = await verifyVoterBackend(voterId);
+        console.log("Verification result:", result);
         
         if (result.success) {
             // Store verification status in session storage
@@ -110,7 +113,8 @@ async function handleSubmit(e) {
                 window.location.href = 'dashboard.html';
             }, 1500);
         } else {
-            showStatus(result.error || "Verification failed", false);
+            console.log("Verification failed:", result);
+            showStatus(result.error || result.message || "Verification failed", false);
         }
     } catch (error) {
         console.error('Error in handleSubmit:', error);
