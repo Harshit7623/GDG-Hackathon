@@ -98,9 +98,13 @@ async function handleSubmit(e) {
         const result = await verifyVoterBackend(voterId);
         
         if (result.success) {
-            // Store verified voter data in session storage
-            sessionStorage.setItem('verifiedVoter', JSON.stringify(result.data));
-            showStatus("Voter ID verified successfully!", true);
+            // Store verification status in session storage
+            sessionStorage.setItem('verificationStatus', JSON.stringify({
+                voterId: voterId,
+                verified: true,
+                message: result.message
+            }));
+            showStatus(result.message, true);
             // Redirect to dashboard after a short delay
             setTimeout(() => {
                 window.location.href = 'dashboard.html';
