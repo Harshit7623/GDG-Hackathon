@@ -26,7 +26,8 @@ async function verifyVoterBackend(voterId) {
         const data = await response.json();
         console.log("Raw backend response:", data);
 
-        if (!response.ok) {
+        // Only throw error for server errors (500+), not for 404
+        if (response.status >= 500) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
 
@@ -114,11 +115,11 @@ async function handleSubmit(e) {
             }, 1500);
         } else {
             console.log("Verification failed:", result);
-            showStatus(result.error || result.message || "Verification failed", false);
+            showStatus(result.message || "Voter ID not found in database", false);
         }
     } catch (error) {
         console.error('Error in handleSubmit:', error);
-        showStatus(error.message || 'Error verifying voter ID. Please try again.', false);
+        showStatus('Server error. Please try again later.', false);
     } finally {
         // Reset button state
         submitBtn.disabled = false;
