@@ -14,7 +14,7 @@ const dbAdmin = admin.firestore();
 async function checkFirestoreConnection() {
     try {
         // Try a simple query to test the connection
-        const testQuery = await db.collection("Voters").limit(1).get();
+        const testQuery = await dbAdmin.collection("Voters").limit(1).get();
         console.log("✅ Firestore connection test successful");
         return true;
     } catch (error) {
@@ -34,16 +34,16 @@ export async function checkVoter(voterId) {
         }
 
         // Try with original voterId
-        let voterDoc = await db.collection("Voters").doc(voterId).get();
+        let voterDoc = await dbAdmin.collection("Voters").doc(voterId).get();
         
         // If not found, try with uppercase voterId
         if (!voterDoc.exists) {
-            voterDoc = await db.collection("Voters").doc(voterId.toUpperCase()).get();
+            voterDoc = await dbAdmin.collection("Voters").doc(voterId.toUpperCase()).get();
         }
         
         // If still not found, try with lowercase voterId
         if (!voterDoc.exists) {
-            voterDoc = await db.collection("Voters").doc(voterId.toLowerCase()).get();
+            voterDoc = await dbAdmin.collection("Voters").doc(voterId.toLowerCase()).get();
         }
 
         if (!voterDoc.exists) {
@@ -90,7 +90,7 @@ export async function verifyVoter(voterId) {
         }
 
         // Update verification status
-        await db.collection("Voters").doc(voterId).update({
+        await dbAdmin.collection("Voters").doc(voterId).update({
             verified: true,
             verifiedAt: new Date()
         });

@@ -1,10 +1,19 @@
 import express from "express";
 import cors from "cors";
 import { checkVoter, verifyVoter } from "./verification.js";
-import { db } from "./firebase-config.js";
+import admin from "firebase-admin";
 
 const app = express();
 const PORT = process.env.PORT || 5001;
+
+// Ensure Firebase Admin is initialized only once
+if (!admin.apps.length) {
+    admin.initializeApp({
+        credential: admin.credential.applicationDefault(),
+    });
+}
+
+const dbAdmin = admin.firestore();
 
 // Middleware
 app.use(express.json());
@@ -22,7 +31,7 @@ app.use(cors({
 app.get("/", async (req, res) => {
     try {
         // Test Firestore connection
-        await db.collection("Voters").limit(1).get();
+        await dbAdmin.collection("Voters").limit(1).get();
         res.json({
             status: "ok",
             message: "Server is running!",
