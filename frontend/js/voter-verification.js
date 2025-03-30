@@ -110,7 +110,7 @@ async function handleSubmit(e) {
                 window.location.href = 'dashboard.html';
             }, 1500);
         } else {
-            showStatus(result.error || "Verification failed", false);
+            showStatus(result.message || "Verification failed", false);
         }
     } catch (error) {
         console.error('Error in handleSubmit:', error);
