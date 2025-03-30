@@ -33,6 +33,15 @@ async function verifyVoterBackend(voterId) {
             };
         }
 
+        // Handle already verified case
+        if (data.message === "Voter already verified") {
+            return {
+                success: true,
+                message: "This voter has already been verified in the system."
+            };
+        }
+
+        // Handle other error cases
         if (!response.ok) {
             throw new Error(data.message || `HTTP error! status: ${response.status}`);
         }
@@ -119,11 +128,7 @@ async function handleSubmit(e) {
                 window.location.href = 'dashboard.html';
             }, 1500);
         } else {
-            // Show a more user-friendly message for not found cases
-            const message = result.message === "Voter not found in database" 
-                ? "This Voter ID is not registered in our system. Please check the ID and try again."
-                : result.message || "Verification failed";
-            showStatus(message, false);
+            showStatus(result.message, false);
         }
     } catch (error) {
         console.error('Error in handleSubmit:', error);
