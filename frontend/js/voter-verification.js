@@ -133,7 +133,13 @@ function showStatus(message, isSuccess) {
     
     statusDiv.textContent = message;
     statusDiv.style.display = "block";
-    statusDiv.className = `status ${isSuccess ? 'success' : 'error'}`;
+    
+    // Use info style for not found cases, success for verified, error for other cases
+    if (message.includes("not registered")) {
+        statusDiv.className = 'status info';
+    } else {
+        statusDiv.className = `status ${isSuccess ? 'success' : 'error'}`;
+    }
 }
 
 // Wait for DOM to be fully loaded
