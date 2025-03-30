@@ -33,29 +33,43 @@ export async function checkVoter(voterId) {
             };
         }
 
-        // Try with original voterId
-        let voterDoc = await dbAdmin.collection("Voters").doc(voterId).get();
-        
-        // If not found, try with uppercase voterId
-        if (!voterDoc.exists) {
-            voterDoc = await dbAdmin.collection("Voters").doc(voterId.toUpperCase()).get();
-        }
-        
-        // If still not found, try with lowercase voterId
-        if (!voterDoc.exists) {
-            voterDoc = await dbAdmin.collection("Voters").doc(voterId.toLowerCase()).get();
-        }
+        // Query for voter with matching voterId field
+        const querySnapshot = await dbAdmin.collection("Voters")
+            .where("voterId", "==", voterId)
+            .get();
 
-        if (!voterDoc.exists) {
+        if (querySnapshot.empty) {
+            // Try with uppercase voterId
+            const upperQuerySnapshot = await dbAdmin.collection("Voters")
+                .where("voterId", "==", voterId.toUpperCase())
+                .get();
+
+            if (upperQuerySnapshot.empty) {
+                // Try with lowercase voterId
+                const lowerQuerySnapshot = await dbAdmin.collection("Voters")
+                    .where("voterId", "==", voterId.toLowerCase())
+                    .get();
+
+                if (lowerQuerySnapshot.empty) {
+                    return {
+                        success: false,
+                        message: "Voter not found in database"
+                    };
+                }
+                return {
+                    success: true,
+                    data: lowerQuerySnapshot.docs[0].data()
+                };
+            }
             return {
-                success: false,
-                message: "Voter not found in database"
+                success: true,
+                data: upperQuerySnapshot.docs[0].data()
             };
         }
 
         return {
             success: true,
-            data: voterDoc.data()
+            data: querySnapshot.docs[0].data()
         };
     } catch (error) {
         console.error("Error checking voter:", error);
@@ -90,10 +104,16 @@ export async function verifyVoter(voterId) {
         }
 
         // Update verification status
-        await dbAdmin.collection("Voters").doc(voterId).update({
-            verified: true,
-            verifiedAt: new Date()
-        });
+        const querySnapshot = await dbAdmin.collection("Voters")
+            .where("voterId", "==", voterId)
+            .get();
+
+        if (!querySnapshot.empty) {
+            await querySnapshot.docs[0].ref.update({
+                verified: true,
+                verifiedAt: new Date()
+            });
+        }
 
         return {
             success: true,
