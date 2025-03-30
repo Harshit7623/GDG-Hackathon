@@ -4,7 +4,7 @@ import { checkVoter, verifyVoter } from "./verification.js";
 import { db } from "./firebase-config.js";
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 
 // Middleware
 app.use(express.json());
@@ -14,6 +14,7 @@ app.use(cors({
         "http://127.0.0.1:5500",
         "https://your-frontend-domain.com"
     ],
+    methods: ['GET', 'POST'],
     credentials: true
 }));
 
@@ -29,9 +30,10 @@ app.get("/", async (req, res) => {
             projectId: process.env.GOOGLE_CREDENTIALS ? JSON.parse(process.env.GOOGLE_CREDENTIALS).project_id : "not-set"
         });
     } catch (error) {
+        console.error("Health check error:", error);
         res.status(500).json({
             status: "error",
-            message: "Server is running but Firestore connection failed",
+            message: "Server error",
             error: error.message
         });
     }

@@ -3,12 +3,17 @@ import { collection, query, where, getDocs } from "https://www.gstatic.com/fireb
 
 console.log("Voter verification script loaded");
 
-// API endpoint - will be replaced during build
-const API_URL = window.API_URL || 'http://localhost:5001';
+// API endpoint configuration
+const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:5001'
+    : 'https://your-backend-url.onrender.com';
+
+console.log("Using API URL:", API_URL);
 
 // Function to verify voter ID through backend API
 async function verifyVoterBackend(voterId) {
     try {
+        console.log("Verifying voter ID with backend:", voterId);
         const response = await fetch(`${API_URL}/verify-voter`, {
             method: 'POST',
             headers: {
@@ -17,7 +22,12 @@ async function verifyVoterBackend(voterId) {
             body: JSON.stringify({ voterId })
         });
 
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
         const data = await response.json();
+        console.log("Backend verification response:", data);
         return data;
     } catch (error) {
         console.error("Backend verification error:", error);
@@ -76,45 +86,49 @@ async function handleSubmit(e) {
     
     try {
         // Get form data
-        const voterData = {
-            voterId: document.getElementById('voterId').value,
-            name: document.getElementById('name').value,
-            dob: document.getElementById('dob').value,
-            constituency: document.getElementById('constituency').value
-        };
+        const voterId = document.getElementById('voterId').value;
         
-        console.log("Form data:", voterData);
+        if (!voterId) {
+            throw new Error('Please enter a Voter ID');
+        }
         
-        // Verify through both frontend and backend
-        const [frontendResult, backendResult] = await Promise.all([
-            verifyVoterFrontend(voterData),
-            verifyVoterBackend(voterData.voterId)
-        ]);
+        console.log("Verifying voter ID:", voterId);
         
-        if (frontendResult.success && backendResult.message) {
+        // Verify through backend
+        const result = await verifyVoterBackend(voterId);
+        
+        if (result.success) {
             // Store verified voter data in session storage
-            sessionStorage.setItem('verifiedVoter', JSON.stringify(frontendResult.data));
-            alert("Voter ID verified successfully through both systems!");
-            // Redirect to voting page or dashboard
-            window.location.href = 'dashboard.html';
+            sessionStorage.setItem('verifiedVoter', JSON.stringify(result.data));
+            showStatus("Voter ID verified successfully!", true);
+            // Redirect to dashboard after a short delay
+            setTimeout(() => {
+                window.location.href = 'dashboard.html';
+            }, 1500);
         } else {
-            let errorMessage = "Verification failed: ";
-            if (!frontendResult.success) {
-                errorMessage += "Invalid voter details. ";
-            }
-            if (!backendResult.message) {
-                errorMessage += "Backend verification failed.";
-            }
-            alert(errorMessage);
+            showStatus(result.error || "Verification failed", false);
         }
     } catch (error) {
         console.error('Error in handleSubmit:', error);
-        alert('Error verifying voter ID. Please try again.');
+        showStatus(error.message || 'Error verifying voter ID. Please try again.', false);
     } finally {
         // Reset button state
         submitBtn.disabled = false;
         submitBtn.textContent = 'Verify Voter ID';
     }
+}
+
+// Function to show status messages
+function showStatus(message, isSuccess) {
+    const statusDiv = document.getElementById('status');
+    if (!statusDiv) {
+        console.error("Status div not found!");
+        return;
+    }
+    
+    statusDiv.textContent = message;
+    statusDiv.style.display = "block";
+    statusDiv.className = `status ${isSuccess ? 'success' : 'error'}`;
 }
 
 // Wait for DOM to be fully loaded
