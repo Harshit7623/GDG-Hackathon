@@ -110,7 +110,11 @@ async function handleSubmit(e) {
                 window.location.href = 'dashboard.html';
             }, 1500);
         } else {
-            showStatus(result.message || "Verification failed", false);
+            // Show a more user-friendly message for not found cases
+            const message = result.message === "Voter not found in database" 
+                ? "This Voter ID is not registered in our system. Please check the ID and try again."
+                : result.message || "Verification failed";
+            showStatus(message, false);
         }
     } catch (error) {
         console.error('Error in handleSubmit:', error);
