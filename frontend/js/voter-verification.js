@@ -19,33 +19,15 @@ async function verifyVoterBackend(voterId) {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ voterID: voterId })
+            body: JSON.stringify({ voterId })
         });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
 
         const data = await response.json();
         console.log("Backend verification response:", data);
-
-        // Handle different response status codes
-        if (response.status === 404) {
-            return {
-                success: false,
-                message: "This Voter ID is not registered in our system. Please check the ID and try again."
-            };
-        }
-
-        // Handle already verified case
-        if (data.message === "Voter already verified") {
-            return {
-                success: true,
-                message: "This voter has already been verified in the system."
-            };
-        }
-
-        // Handle other error cases
-        if (!response.ok) {
-            throw new Error(data.message || `HTTP error! status: ${response.status}`);
-        }
-
         return data;
     } catch (error) {
         console.error("Backend verification error:", error);
@@ -128,7 +110,8 @@ async function handleSubmit(e) {
                 window.location.href = 'dashboard.html';
             }, 1500);
         } else {
-            showStatus(result.message, false);
+            // Show a more user-friendly message for not found cases
+            showStatus("This Voter ID is not registered in our database. Please check the ID and try again.", false);
         }
     } catch (error) {
         console.error('Error in handleSubmit:', error);

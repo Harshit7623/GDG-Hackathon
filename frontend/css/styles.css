@@ -168,6 +168,18 @@ button:disabled {
     @apply bg-red-100 text-red-800;
 }
 
+.status.error {
+    background-color: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+}
+
+.status.info {
+    background-color: #e0f2fe;
+    color: #075985;
+    border: 1px solid #bae6fd;
+}
+
 /* Responsive adjustments */
 @media (max-width: 640px) {
     .container {
@@ -193,82 +205,4 @@ button:disabled {
     color: #495057;
     font-weight: 500;
     margin-bottom: 10px;
-}
-
-/* Dashboard Styles */
-.dashboard {
-    background-color: white;
-    padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    max-width: 800px;
-    margin: 2rem auto;
-}
-
-.dashboard h2 {
-    color: #1a73e8;
-    margin-bottom: 2rem;
-    text-align: center;
-}
-
-.status-card {
-    background-color: #f8f9fa;
-    border-radius: 8px;
-    padding: 1.5rem;
-    margin-bottom: 2rem;
-}
-
-.status-card h3 {
-    color: #202124;
-    margin-bottom: 1rem;
-}
-
-.status-item {
-    margin-bottom: 1rem;
-    padding: 0.5rem;
-    border-bottom: 1px solid #e8eaed;
-}
-
-.status-item:last-child {
-    border-bottom: none;
-}
-
-.status-item strong {
-    color: #5f6368;
-    margin-right: 0.5rem;
-}
-
-.dashboard-actions {
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
-    margin-top: 2rem;
-}
-
-.btn-primary, .btn-secondary {
-    padding: 0.75rem 1.5rem;
-    border-radius: 4px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.btn-primary {
-    background-color: #1a73e8;
-    color: white;
-    border: none;
-}
-
-.btn-primary:hover {
-    background-color: #1557b0;
-}
-
-.btn-secondary {
-    background-color: white;
-    color: #1a73e8;
-    border: 1px solid #1a73e8;
-}
-
-.btn-secondary:hover {
-    background-color: #f8f9fa;
 } 

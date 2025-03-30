@@ -1,85 +1,121 @@
+import admin from "firebase-admin";
 import { db } from "./firebase-config.js";
 
-// Function to check if a voter exists
-export async function checkVoter(voterId) {
-    try {
-        if (!voterId) {
-            return {
-                success: false,
-                message: "Voter ID is required"
-            };
-        }
+// Ensure Firebase Admin is initialized only once
+if (!admin.apps.length) {
+    admin.initializeApp({
+        credential: admin.credential.applicationDefault(),
+    });
+}
 
-        // Query for voter with matching voterID field
+const dbAdmin = admin.firestore();
+
+// Check Firestore connection
+async function checkFirestoreConnection() {
+    try {
+        // Try a simple query to test the connection
+        const testQuery = await db.collection("Voters").limit(1).get();
+        console.log("✅ Firestore connection test successful");
+        return true;
+    } catch (error) {
+        console.error("❌ Firestore connection test failed:", error.message);
+        return false;
+    }
+}
+
+// Check if voter exists
+export async function checkVoter(voterId) {
+    if (!voterId) {
+        console.error("❌ Error: Missing voterId");
+        throw new Error("Voter ID is required");
+    }
+
+    console.log(`🔍 Checking voter with ID: ${voterId}`);
+
+    try {
+        // Query Firestore for voter where either voterID or voterId matches
         const querySnapshot = await db.collection("Voters")
             .where("voterID", "==", voterId)
             .get();
 
         if (querySnapshot.empty) {
-            return {
-                success: false,
-                message: "Voter not found in database"
-            };
+            // Try with lowercase 'd' if uppercase 'ID' didn't find anything
+            const altQuerySnapshot = await db.collection("Voters")
+                .where("voterId", "==", voterId)
+                .get();
+
+            if (altQuerySnapshot.empty) {
+                console.log("❌ No such voter found in Firestore!");
+                return null;
+            }
+
+            const voterDoc = altQuerySnapshot.docs[0];
+            console.log("✅ Voter Found:", voterDoc.data());
+            return voterDoc.data();
         }
 
-        return {
-            success: true,
-            data: querySnapshot.docs[0].data()
-        };
+        const voterDoc = querySnapshot.docs[0];
+        console.log("✅ Voter Found:", voterDoc.data());
+        return voterDoc.data();
     } catch (error) {
-        console.error("Error checking voter:", error);
-        return {
-            success: false,
-            message: "Error checking voter status"
-        };
+        console.error("🔥 Error fetching voter data:", error);
+        throw new Error("Error fetching voter data: " + error.message);
     }
 }
 
-// Function to verify a voter
+// Verify voter
 export async function verifyVoter(voterId) {
     try {
-        // First check if voter exists
-        const checkResult = await checkVoter(voterId);
-        
-        if (!checkResult.success) {
-            return {
-                success: false,
-                message: checkResult.message
-            };
-        }
+        console.log(`✅ Verifying voter with ID: ${voterId}`);
 
-        const voterData = checkResult.data;
-        
-        // Check if already verified
-        if (voterData.verified) {
-            return {
-                success: false,
-                message: "Voter already verified"
-            };
-        }
-
-        // Update verification status
+        // Find voter document where either voterID or voterId matches
         const querySnapshot = await db.collection("Voters")
             .where("voterID", "==", voterId)
             .get();
 
-        if (!querySnapshot.empty) {
-            await querySnapshot.docs[0].ref.update({
-                verified: true,
-                verifiedAt: new Date()
-            });
+        let voterDoc;
+        if (querySnapshot.empty) {
+            // Try with lowercase 'd' if uppercase 'ID' didn't find anything
+            const altQuerySnapshot = await db.collection("Voters")
+                .where("voterId", "==", voterId)
+                .get();
+
+            if (altQuerySnapshot.empty) {
+                console.log("❌ No such voter found!");
+                return { success: false, error: "Voter not found" };
+            }
+
+            voterDoc = altQuerySnapshot.docs[0];
+        } else {
+            voterDoc = querySnapshot.docs[0];
         }
 
-        return {
-            success: true,
-            message: "Voter verified successfully",
-            data: voterData
-        };
+        const voterRef = voterDoc.ref;
+        const voterData = voterDoc.data();
+
+        // Check if voter is already verified
+        if (voterData.status === "verified") {
+            console.log("ℹ️ Voter already verified");
+            return { success: true, message: "Voter already verified" };
+        }
+
+        // Update the document status to "verified"
+        await voterRef.update({ 
+            status: "verified",
+            verifiedAt: new Date()
+        });
+        
+        console.log("✅ Voter Verified Successfully!");
+        return { success: true, message: "Voter verified successfully" };
     } catch (error) {
-        console.error("Error verifying voter:", error);
-        return {
-            success: false,
-            message: "Error verifying voter"
-        };
+        console.error("🔥 Error verifying voter:", error);
+        return { success: false, error: error.message };
     }
 }
+
+// Initialize connection check
+checkFirestoreConnection().then(isConnected => {
+    if (!isConnected) {
+        console.error("❌ Failed to establish Firestore connection");
+    }
+});

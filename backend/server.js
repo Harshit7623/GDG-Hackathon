@@ -1,19 +1,10 @@
 import express from "express";
 import cors from "cors";
 import { checkVoter, verifyVoter } from "./verification.js";
-import admin from "firebase-admin";
+import { db } from "./firebase-config.js";
 
 const app = express();
 const PORT = process.env.PORT || 5001;
-
-// Ensure Firebase Admin is initialized only once
-if (!admin.apps.length) {
-    admin.initializeApp({
-        credential: admin.credential.applicationDefault(),
-    });
-}
-
-const dbAdmin = admin.firestore();
 
 // Middleware
 app.use(express.json());
@@ -31,7 +22,7 @@ app.use(cors({
 app.get("/", async (req, res) => {
     try {
         // Test Firestore connection
-        await dbAdmin.collection("Voters").limit(1).get();
+        await db.collection("Voters").limit(1).get();
         res.json({
             status: "ok",
             message: "Server is running!",
@@ -61,26 +52,20 @@ app.post("/verify-voter", async (req, res) => {
             console.error("❌ Error: Missing voterId in request body");
             return res.status(400).json({ 
                 success: false,
-                message: "Voter ID is required" 
+                error: "Voter ID is required" 
             });
         }
 
         const result = await verifyVoter(voterId);
-        
-        // Set appropriate status code based on result
         if (!result.success) {
-            if (result.message === "Voter not found in database") {
-                return res.status(404).json(result);
-            }
-            return res.status(400).json(result);
+            return res.status(404).json(result);
         }
-        
         res.json(result);
     } catch (error) {
         console.error("🔥 Error in /verify-voter endpoint:", error);
         res.status(500).json({ 
             success: false,
-            message: error.message 
+            error: error.message 
         });
     }
 });
