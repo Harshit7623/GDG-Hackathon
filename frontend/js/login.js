@@ -7,26 +7,37 @@ import { RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.co
 
 console.log("Firebase modules imported");
 
-// Initialize reCAPTCHA verifier
+// Global variable for reCAPTCHA verifier
 let recaptchaVerifier = null;
 
+// Function to clear existing reCAPTCHA
+function clearRecaptcha() {
+    if (recaptchaVerifier) {
+        console.log("Clearing existing reCAPTCHA...");
+        recaptchaVerifier.clear();
+        recaptchaVerifier = null;
+    }
+}
+
+// Function to setup reCAPTCHA
 async function setupRecaptcha() {
     try {
-        if (!recaptchaVerifier) {
-            console.log("Setting up reCAPTCHA...");
-            console.log("Auth instance in setupRecaptcha:", auth);
-            
-            // Create a new reCAPTCHA verifier
-            recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-                size: 'invisible',
-                callback: (response) => {
-                    console.log("reCAPTCHA verified");
-                }
-            });
-            
-            console.log("reCAPTCHA setup complete");
-            console.log("reCAPTCHA verifier:", recaptchaVerifier);
-        }
+        // Clear any existing reCAPTCHA first
+        clearRecaptcha();
+        
+        console.log("Setting up new reCAPTCHA...");
+        console.log("Auth instance:", auth);
+        
+        // Create a new reCAPTCHA verifier
+        recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+            size: 'invisible',
+            callback: (response) => {
+                console.log("reCAPTCHA verified");
+            }
+        });
+        
+        console.log("reCAPTCHA setup complete");
+        return recaptchaVerifier;
     } catch (error) {
         console.error("Error setting up reCAPTCHA:", error);
         throw error;
@@ -38,13 +49,13 @@ async function sendOTP(phoneNumber) {
     console.log("Starting OTP sending process...");
     try {
         // Setup reCAPTCHA
-        await setupRecaptcha();
+        const verifier = await setupRecaptcha();
         
         console.log("Sending OTP to:", phoneNumber);
-        console.log("Using reCAPTCHA verifier:", recaptchaVerifier);
+        console.log("Using reCAPTCHA verifier:", verifier);
         
         // Send OTP
-        const confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, recaptchaVerifier);
+        const confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, verifier);
         
         // Store the confirmation result
         window.confirmationResult = confirmationResult;
@@ -53,6 +64,8 @@ async function sendOTP(phoneNumber) {
         return confirmationResult;
     } catch (error) {
         console.error('Error sending OTP:', error);
+        // Clear reCAPTCHA on error
+        clearRecaptcha();
         throw error;
     }
 }
@@ -69,7 +82,7 @@ async function handleSubmit(e) {
     
     if (!phoneNumber) {
         console.error("Phone number is required");
-        alert("Please enter your phone number");
+        showStatus("Please enter your phone number", false);
         return;
     }
     
@@ -85,17 +98,11 @@ async function handleSubmit(e) {
         window.location.href = 'otp.html';
     } catch (error) {
         console.error('Error in handleSubmit:', error);
-        alert('Error sending OTP. Please try again.');
+        showStatus(error.message || 'Error sending OTP. Please try again.', false);
         
         // Reset button state
         submitBtn.disabled = false;
         submitBtn.textContent = 'Send OTP';
-        
-        // Reset reCAPTCHA
-        if (recaptchaVerifier) {
-            recaptchaVerifier.clear();
-            recaptchaVerifier = null;
-        }
     }
 }
 
