@@ -25,6 +25,14 @@ async function verifyVoterBackend(voterId) {
         const data = await response.json();
         console.log("Backend verification response:", data);
 
+        // Handle different response status codes
+        if (response.status === 404) {
+            return {
+                success: false,
+                message: "This Voter ID is not registered in our system. Please check the ID and try again."
+            };
+        }
+
         if (!response.ok) {
             throw new Error(data.message || `HTTP error! status: ${response.status}`);
         }
