@@ -19,7 +19,7 @@ async function verifyVoterBackend(voterId) {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ voterId })
+            body: JSON.stringify({ voterID: voterId })
         });
 
         const data = await response.json();
