@@ -22,12 +22,13 @@ async function verifyVoterBackend(voterId) {
             body: JSON.stringify({ voterId })
         });
 
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
         const data = await response.json();
         console.log("Backend verification response:", data);
+
+        if (!response.ok) {
+            throw new Error(data.message || `HTTP error! status: ${response.status}`);
+        }
+
         return data;
     } catch (error) {
         console.error("Backend verification error:", error);
