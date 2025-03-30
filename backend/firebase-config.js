@@ -1,29 +1,36 @@
 import admin from "firebase-admin";
 import dotenv from "dotenv";
-import fs from "fs";
 
-dotenv.config(); // Load environment variables
+dotenv.config();
 
 let credentials;
 let db;
 
 try {
-    // First try to get credentials from environment variable
+    console.log("🟢 Checking Environment Variables...");
+    console.log("GOOGLE_APPLICATION_CREDENTIALS:", process.env.GOOGLE_APPLICATION_CREDENTIALS ? "Set ✅" : "Not Set ❌");
+    console.log("GOOGLE_CREDENTIALS:", process.env.GOOGLE_CREDENTIALS ? "Set ✅" : "Not Set ❌");
+
+    // For Render deployment: use GOOGLE_CREDENTIALS
     if (process.env.GOOGLE_CREDENTIALS) {
-        console.log("🚀 Running with environment credentials ✅");
-        credentials = JSON.parse(process.env.GOOGLE_CREDENTIALS);
-    } 
-    // Fallback to local file if environment variable is not set
-    else if (process.env.GOOGLE_APPLICATION_CREDENTIALS) {
-        const localCredentialPath = process.env.GOOGLE_APPLICATION_CREDENTIALS;
-        if (fs.existsSync(localCredentialPath)) {
-            console.log("🖥️ Running Locally: Using GOOGLE_APPLICATION_CREDENTIALS ✅");
-            credentials = JSON.parse(fs.readFileSync(localCredentialPath, "utf8"));
-        } else {
-            throw new Error(`Credentials file not found at: ${localCredentialPath}`);
+        console.log("🚀 Using GOOGLE_CREDENTIALS environment variable");
+        try {
+            credentials = JSON.parse(process.env.GOOGLE_CREDENTIALS);
+            console.log("✅ Successfully parsed GOOGLE_CREDENTIALS");
+            console.log("Project ID from credentials:", credentials.project_id);
+        } catch (parseError) {
+            console.error("❌ Error parsing GOOGLE_CREDENTIALS:", parseError);
+            throw new Error("Failed to parse GOOGLE_CREDENTIALS JSON");
         }
-    } else {
-        throw new Error("No valid Firebase credentials found! Please set GOOGLE_CREDENTIALS environment variable");
+    } 
+    // For local development: use file path
+    else if (process.env.GOOGLE_APPLICATION_CREDENTIALS) {
+        console.log("🖥️ Using local credentials file");
+        const fs = await import('fs');
+        credentials = JSON.parse(fs.readFileSync(process.env.GOOGLE_APPLICATION_CREDENTIALS, "utf8"));
+    } 
+    else {
+        throw new Error("No Firebase credentials found!");
     }
 
     // Validate credentials
@@ -31,8 +38,9 @@ try {
         throw new Error("Invalid credentials: project_id is missing");
     }
 
-    // ✅ Initialize Firebase Admin
+    // Initialize Firebase with explicit project ID
     if (!admin.apps.length) {
+        console.log("Initializing Firebase Admin with project:", credentials.project_id);
         admin.initializeApp({
             credential: admin.credential.cert(credentials),
             projectId: credentials.project_id,
@@ -44,8 +52,16 @@ try {
     db = admin.firestore();
     console.log("🟢 Firestore connected!");
 } catch (error) {
-    console.error("❌ Error initializing Firebase:", error.message);
-    process.exit(1);
+    console.error("❌ Firebase initialization error:", error.message);
+    if (process.env.GOOGLE_CREDENTIALS) {
+        console.error("📝 GOOGLE_CREDENTIALS length:", process.env.GOOGLE_CREDENTIALS.length);
+        // Log first and last few characters to check format
+        console.error("📝 GOOGLE_CREDENTIALS preview:", 
+            process.env.GOOGLE_CREDENTIALS.substring(0, 50) + "..." +
+            process.env.GOOGLE_CREDENTIALS.substring(process.env.GOOGLE_CREDENTIALS.length - 50)
+        );
+    }
+    throw error;
 }
 
 export { admin, db };
