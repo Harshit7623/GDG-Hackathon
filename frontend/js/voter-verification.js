@@ -25,14 +25,10 @@ async function verifyVoterBackend(voterId) {
             })
         });
 
-        if (!response.ok) {
-            const errorData = await response.json();
-            console.error("Backend error details:", errorData);
-            throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
-        }
-
         const data = await response.json();
         console.log("Backend verification response:", data);
+
+        // Return the data regardless of HTTP status code
         return data;
     } catch (error) {
         console.error("Backend verification error:", error);
@@ -115,12 +111,12 @@ async function handleSubmit(e) {
                 window.location.href = 'dashboard.html';
             }, 1500);
         } else {
-            // Show a more user-friendly message for not found cases
-            showStatus("This Voter ID is not registered in our database. Please check the ID and try again.", false);
+            // Show the message from the backend
+            showStatus(result.message, false);
         }
     } catch (error) {
         console.error('Error in handleSubmit:', error);
-        showStatus(error.message || 'Error verifying voter ID. Please try again.', false);
+        showStatus('Error connecting to server. Please try again.', false);
     } finally {
         // Reset button state
         submitBtn.disabled = false;
