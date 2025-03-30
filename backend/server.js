@@ -18,12 +18,23 @@ app.use(cors({
 }));
 
 // Health check endpoint
-app.get("/", (req, res) => {
-    res.json({
-        status: "ok",
-        message: "Server is running!",
-        projectId: process.env.GOOGLE_CREDENTIALS ? JSON.parse(process.env.GOOGLE_CREDENTIALS).project_id : "not-set"
-    });
+app.get("/", async (req, res) => {
+    try {
+        // Test Firestore connection
+        await db.collection("Voters").limit(1).get();
+        res.json({
+            status: "ok",
+            message: "Server is running!",
+            firestore: "connected",
+            projectId: process.env.GOOGLE_CREDENTIALS ? JSON.parse(process.env.GOOGLE_CREDENTIALS).project_id : "not-set"
+        });
+    } catch (error) {
+        res.status(500).json({
+            status: "error",
+            message: "Server is running but Firestore connection failed",
+            error: error.message
+        });
+    }
 });
 
 // Voter verification endpoint

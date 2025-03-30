@@ -1,4 +1,5 @@
 import admin from "firebase-admin";
+import { db } from "./firebase-config.js";
 
 // Ensure Firebase Admin is initialized only once
 if (!admin.apps.length) {
@@ -7,19 +8,22 @@ if (!admin.apps.length) {
     });
 }
 
-const db = admin.firestore();
+const dbAdmin = admin.firestore();
+
+// Check Firestore connection
 async function checkFirestoreConnection() {
     try {
-        console.log("🟢 Checking Firestore connection...");
-        const testDoc = await db.collection("Voters").limit(1).get();
-        console.log("✅ Firestore Connection Successful!");
+        // Try a simple query to test the connection
+        const testQuery = await db.collection("Voters").limit(1).get();
+        console.log("✅ Firestore connection test successful");
+        return true;
     } catch (error) {
-        console.error("🔥 Firestore Connection Failed:", error);
+        console.error("❌ Firestore connection test failed:", error.message);
+        return false;
     }
 }
 
-checkFirestoreConnection();
-
+// Check if voter exists
 export async function checkVoter(voterId) {
     if (!voterId) {
         console.error("❌ Error: Missing voterId");
@@ -59,6 +63,7 @@ export async function checkVoter(voterId) {
     }
 }
 
+// Verify voter
 export async function verifyVoter(voterId) {
     try {
         console.log(`✅ Verifying voter with ID: ${voterId}`);
@@ -107,3 +112,10 @@ export async function verifyVoter(voterId) {
         throw new Error("Error verifying voter: " + error.message);
     }
 }
+
+// Initialize connection check
+checkFirestoreConnection().then(isConnected => {
+    if (!isConnected) {
+        console.error("❌ Failed to establish Firestore connection");
+    }
+});

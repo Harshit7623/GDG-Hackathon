@@ -51,6 +51,15 @@ try {
 
     db = admin.firestore();
     console.log("🟢 Firestore connected!");
+
+    // Test the connection
+    try {
+        await db.collection("Voters").limit(1).get();
+        console.log("✅ Firestore connection test successful");
+    } catch (error) {
+        console.error("❌ Firestore connection test failed:", error.message);
+        throw error;
+    }
 } catch (error) {
     console.error("❌ Firebase initialization error:", error.message);
     if (process.env.GOOGLE_CREDENTIALS) {
