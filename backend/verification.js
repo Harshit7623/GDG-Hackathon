@@ -82,7 +82,7 @@ export async function verifyVoter(voterId) {
 
             if (altQuerySnapshot.empty) {
                 console.log("❌ No such voter found!");
-                throw new Error("Voter not found");
+                return { success: false, error: "Voter not found" };
             }
 
             voterDoc = altQuerySnapshot.docs[0];
@@ -96,20 +96,20 @@ export async function verifyVoter(voterId) {
         // Check if voter is already verified
         if (voterData.status === "verified") {
             console.log("ℹ️ Voter already verified");
-            return { message: "Voter already verified" };
+            return { success: true, message: "Voter already verified" };
         }
 
         // Update the document status to "verified"
         await voterRef.update({ 
             status: "verified",
-            verifiedAt: admin.firestore.FieldValue.serverTimestamp()
+            verifiedAt: new Date()
         });
         
         console.log("✅ Voter Verified Successfully!");
-        return { message: "Voter verified successfully" };
+        return { success: true, message: "Voter verified successfully" };
     } catch (error) {
         console.error("🔥 Error verifying voter:", error);
-        throw new Error("Error verifying voter: " + error.message);
+        return { success: false, error: error.message };
     }
 }
 

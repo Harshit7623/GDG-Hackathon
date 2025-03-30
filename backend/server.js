@@ -50,14 +50,23 @@ app.post("/verify-voter", async (req, res) => {
         
         if (!voterId) {
             console.error("❌ Error: Missing voterId in request body");
-            return res.status(400).json({ error: "Voter ID is required" });
+            return res.status(400).json({ 
+                success: false,
+                error: "Voter ID is required" 
+            });
         }
 
         const result = await verifyVoter(voterId);
+        if (!result.success) {
+            return res.status(404).json(result);
+        }
         res.json(result);
     } catch (error) {
         console.error("🔥 Error in /verify-voter endpoint:", error);
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            success: false,
+            error: error.message 
+        });
     }
 });
 
