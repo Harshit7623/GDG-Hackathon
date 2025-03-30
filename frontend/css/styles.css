@@ -173,4 +173,24 @@ button:disabled {
     .container {
         @apply px-4;
     }
+}
+
+.demo-credentials {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+    border: 1px solid #dee2e6;
+}
+
+.demo-credentials p {
+    margin: 5px 0;
+    color: #6c757d;
+    font-size: 0.9em;
+}
+
+.demo-credentials p:first-child {
+    color: #495057;
+    font-weight: 500;
+    margin-bottom: 10px;
 } 
