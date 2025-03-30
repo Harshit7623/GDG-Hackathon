@@ -82,7 +82,7 @@ export async function verifyVoter(voterId) {
 
             if (altQuerySnapshot.empty) {
                 console.log("❌ No such voter found!");
-                return { success: false, error: "Voter not found" };
+                return { success: false, message: "Voter not found in database" };
             }
 
             voterDoc = altQuerySnapshot.docs[0];
@@ -96,7 +96,11 @@ export async function verifyVoter(voterId) {
         // Check if voter is already verified
         if (voterData.status === "verified") {
             console.log("ℹ️ Voter already verified");
-            return { success: true, message: "Voter already verified" };
+            return { 
+                success: true, 
+                message: "Voter already verified",
+                data: voterData
+            };
         }
 
         // Update the document status to "verified"
@@ -106,10 +110,14 @@ export async function verifyVoter(voterId) {
         });
         
         console.log("✅ Voter Verified Successfully!");
-        return { success: true, message: "Voter verified successfully" };
+        return { 
+            success: true, 
+            message: "Voter verified successfully",
+            data: voterData
+        };
     } catch (error) {
         console.error("🔥 Error verifying voter:", error);
-        return { success: false, error: error.message };
+        return { success: false, message: error.message };
     }
 }
 

@@ -38,46 +38,6 @@ async function verifyVoterBackend(voterId) {
     }
 }
 
-// Function to verify voter ID through Firestore
-async function verifyVoterFrontend(voterData) {
-    try {
-        console.log("Verifying voter ID:", voterData);
-        
-        // Query the voters collection
-        const votersRef = collection(db, "voters");
-        const q = query(
-            votersRef,
-            where("voterId", "==", voterData.voterId),
-            where("name", "==", voterData.name),
-            where("dob", "==", voterData.dob),
-            where("constituency", "==", voterData.constituency)
-        );
-        
-        const querySnapshot = await getDocs(q);
-        
-        if (!querySnapshot.empty) {
-            // Voter found
-            const voterDoc = querySnapshot.docs[0];
-            console.log("Voter verified successfully:", voterDoc.data());
-            return {
-                success: true,
-                message: "Voter ID verified successfully",
-                data: voterDoc.data()
-            };
-        } else {
-            // Voter not found
-            console.log("Voter not found");
-            return {
-                success: false,
-                message: "Invalid voter details. Please check and try again."
-            };
-        }
-    } catch (error) {
-        console.error("Error verifying voter ID:", error);
-        throw error;
-    }
-}
-
 // Function to handle form submission
 async function handleSubmit(e) {
     e.preventDefault();
@@ -106,7 +66,8 @@ async function handleSubmit(e) {
             sessionStorage.setItem('verificationStatus', JSON.stringify({
                 voterId: voterId,
                 verified: true,
-                message: result.message
+                message: result.message,
+                data: result.data
             }));
             showStatus(result.message, true);
             // Redirect to dashboard after a short delay
@@ -115,7 +76,7 @@ async function handleSubmit(e) {
             }, 1500);
         } else {
             console.log("Verification failed:", result);
-            showStatus(result.message || "Voter ID not found in database", false);
+            showStatus(result.message || "Verification failed", false);
         }
     } catch (error) {
         console.error('Error in handleSubmit:', error);
