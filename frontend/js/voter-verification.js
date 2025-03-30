@@ -19,11 +19,16 @@ async function verifyVoterBackend(voterId) {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ voterId })
+            body: JSON.stringify({ 
+                voterId: voterId,
+                voterID: voterId  // Adding both formats to ensure compatibility
+            })
         });
 
         if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+            const errorData = await response.json();
+            console.error("Backend error details:", errorData);
+            throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
         }
 
         const data = await response.json();
