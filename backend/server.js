@@ -12,7 +12,8 @@ app.use(cors({
     origin: [
         "http://localhost:5500",
         "http://127.0.0.1:5500",
-        "https://your-frontend-domain.com"
+        "https://voter-verification-frontend.onrender.com",
+        "https://voter-verification-backend.onrender.com"
     ],
     methods: ['GET', 'POST'],
     credentials: true
@@ -73,6 +74,6 @@ app.post("/verify-voter", async (req, res) => {
 // Start server
 app.listen(PORT, () => {
     console.log(`🚀 Server is running on port ${PORT}`);
-    console.log("🌐 Allowed origins: http://localhost:5500, http://127.0.0.1:5500, https://your-frontend-domain.com");
+    console.log("🌐 Allowed origins: http://localhost:5500, http://127.0.0.1:5500, https://voter-verification-frontend.onrender.com, https://voter-verification-backend.onrender.com");
     console.log("==> Your service is live 🎉");
 });

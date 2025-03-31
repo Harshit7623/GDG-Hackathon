@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: voter-verification-frontend
+    env: static
+    buildCommand: null
+    staticPublishPath: ./frontend
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html 
