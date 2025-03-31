@@ -1,12 +1,12 @@
 {
-  "name": "voting-frontend",
+  "name": "voter-verification-frontend",
   "version": "1.0.0",
-  "type": "module",
+  "description": "Frontend for Voter Verification System",
+  "main": "index.html",
   "scripts": {
-    "start": "python -m http.server 5500",
-    "build": "node build.js"
+    "start": "serve ."
   },
   "dependencies": {
-    "firebase": "^10.8.0"
+    "serve": "^14.2.1"
   }
 }
