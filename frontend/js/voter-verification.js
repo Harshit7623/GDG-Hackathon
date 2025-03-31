@@ -84,6 +84,7 @@ async function handleSubmit(e) {
         console.log("Verification result:", result);
         
         if (result.success) {
+            showStatus(result.message, true);
             // Store verification status in session storage
             sessionStorage.setItem('verificationStatus', JSON.stringify({
                 voterId: voterId,
@@ -91,7 +92,7 @@ async function handleSubmit(e) {
                 message: result.message,
                 data: result.data
             }));
-            showStatus(result.message, true);
+            
             // Redirect to dashboard after a short delay
             setTimeout(() => {
                 window.location.href = 'dashboard.html';

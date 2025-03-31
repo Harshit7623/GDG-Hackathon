@@ -29,63 +29,65 @@
     <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <!-- Welcome Section -->
         <div class="px-4 py-6 sm:px-0">
-            <h1 class="text-3xl font-bold text-gray-900">Welcome to VoteVerify Dashboard</h1>
-            <p class="mt-2 text-gray-600">Manage and monitor voter verification activities</p>
+            <div class="bg-white rounded-lg shadow p-6">
+                <h1 class="text-2xl font-bold text-gray-900 mb-4">Welcome to VoteVerify Dashboard</h1>
+                <p class="text-gray-600">Manage voter verification and view system statistics.</p>
+            </div>
         </div>
 
         <!-- Stats Grid -->
         <div class="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            <!-- Total Verifications -->
+            <!-- Total Voters Card -->
             <div class="bg-white overflow-hidden shadow rounded-lg">
                 <div class="p-5">
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
                             <svg class="h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                             </svg>
                         </div>
                         <div class="ml-5 w-0 flex-1">
                             <dl>
-                                <dt class="text-sm font-medium text-gray-500 truncate">Total Verifications</dt>
-                                <dd class="text-lg font-semibold text-gray-900" id="totalVerifications">0</dd>
+                                <dt class="text-sm font-medium text-gray-500 truncate">Total Voters</dt>
+                                <dd class="text-3xl font-semibold text-gray-900">1,234</dd>
                             </dl>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Success Rate -->
+            <!-- Verified Voters Card -->
             <div class="bg-white overflow-hidden shadow rounded-lg">
                 <div class="p-5">
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
                             <svg class="h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
                         </div>
                         <div class="ml-5 w-0 flex-1">
                             <dl>
-                                <dt class="text-sm font-medium text-gray-500 truncate">Success Rate</dt>
-                                <dd class="text-lg font-semibold text-gray-900" id="successRate">0%</dd>
+                                <dt class="text-sm font-medium text-gray-500 truncate">Verified Voters</dt>
+                                <dd class="text-3xl font-semibold text-gray-900">1,100</dd>
                             </dl>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Active Users -->
+            <!-- Pending Verifications Card -->
             <div class="bg-white overflow-hidden shadow rounded-lg">
                 <div class="p-5">
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
                             <svg class="h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
                         </div>
                         <div class="ml-5 w-0 flex-1">
                             <dl>
-                                <dt class="text-sm font-medium text-gray-500 truncate">Active Users</dt>
-                                <dd class="text-lg font-semibold text-gray-900" id="activeUsers">0</dd>
+                                <dt class="text-sm font-medium text-gray-500 truncate">Pending Verifications</dt>
+                                <dd class="text-3xl font-semibold text-gray-900">134</dd>
                             </dl>
                         </div>
                     </div>
@@ -100,8 +102,28 @@
                     <h3 class="text-lg leading-6 font-medium text-gray-900">Recent Activity</h3>
                 </div>
                 <div class="border-t border-gray-200">
-                    <ul id="recentActivity" class="divide-y divide-gray-200">
-                        <!-- Activity items will be dynamically added here -->
+                    <ul class="divide-y divide-gray-200">
+                        <li class="px-4 py-4 sm:px-6">
+                            <div class="flex items-center justify-between">
+                                <div class="text-sm font-medium text-blue-600 truncate">Voter ID: DL10002</div>
+                                <div class="ml-2 flex-shrink-0 flex">
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                        Verified
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="mt-2 sm:flex sm:justify-between">
+                                <div class="sm:flex">
+                                    <p class="flex items-center text-sm text-gray-500">
+                                        <svg class="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                        2 minutes ago
+                                    </p>
+                                </div>
+                            </div>
+                        </li>
+                        <!-- Add more activity items as needed -->
                     </ul>
                 </div>
             </div>
@@ -109,7 +131,7 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-white mt-8">
+    <footer class="bg-white mt-auto">
         <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 md:flex md:items-center md:justify-between lg:px-8">
             <div class="flex justify-center space-x-6 md:order-2">
                 <a href="https://github.com/yourusername/voter-verification" class="text-gray-400 hover:text-gray-500">
@@ -136,38 +158,42 @@
                 return;
             }
 
-            // Mock data for dashboard
-            document.getElementById('totalVerifications').textContent = '1,234';
-            document.getElementById('successRate').textContent = '98.5%';
-            document.getElementById('activeUsers').textContent = '45';
-
-            // Add recent activity
-            const recentActivity = document.getElementById('recentActivity');
-            const activities = [
-                { time: '2 minutes ago', action: 'Voter ID DL10002 verified successfully' },
-                { time: '5 minutes ago', action: 'New verification request received' },
-                { time: '10 minutes ago', action: 'System update completed' }
-            ];
-
-            activities.forEach(activity => {
-                const li = document.createElement('li');
-                li.className = 'px-4 py-4 sm:px-6 hover:bg-gray-50';
-                li.innerHTML = `
-                    <div class="flex items-center justify-between">
-                        <p class="text-sm font-medium text-blue-600 truncate">${activity.action}</p>
-                        <div class="ml-2 flex-shrink-0 flex">
-                            <p class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                ${activity.time}
-                            </p>
+            // Get verification status
+            const verificationStatus = JSON.parse(sessionStorage.getItem('verificationStatus'));
+            if (verificationStatus && verificationStatus.verified) {
+                // Update recent activity with the verified voter
+                const activityList = document.querySelector('.divide-y');
+                if (activityList) {
+                    const newActivity = document.createElement('li');
+                    newActivity.className = 'px-4 py-4 sm:px-6';
+                    newActivity.innerHTML = `
+                        <div class="flex items-center justify-between">
+                            <div class="text-sm font-medium text-blue-600 truncate">Voter ID: ${verificationStatus.voterId}</div>
+                            <div class="ml-2 flex-shrink-0 flex">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                    Verified
+                                </span>
+                            </div>
                         </div>
-                    </div>
-                `;
-                recentActivity.appendChild(li);
-            });
+                        <div class="mt-2 sm:flex sm:justify-between">
+                            <div class="sm:flex">
+                                <p class="flex items-center text-sm text-gray-500">
+                                    <svg class="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    Just now
+                                </p>
+                            </div>
+                        </div>
+                    `;
+                    activityList.insertBefore(newActivity, activityList.firstChild);
+                }
+            }
 
             // Handle logout
             document.getElementById('logoutBtn').addEventListener('click', function() {
                 sessionStorage.removeItem('isLoggedIn');
+                sessionStorage.removeItem('verificationStatus');
                 window.location.href = 'login.html';
             });
         });
