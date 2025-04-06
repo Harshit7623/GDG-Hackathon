@@ -1,8 +1,8 @@
 // API endpoint - will be replaced during build
-const API_URL = window.API_URL || "https://gdg-hackathon-9574-qe03q33rv-harshits-projects-a26674e1.vercel.app/";
+const API_URL = window.API_URL || "http://localhost:5001";
 
 // Add immediate console log to verify script loading
-console.log("Login script loaded");
+console.log("Login script loaded with API URL:", API_URL);
 
 // Function to show status messages
 function showStatus(message, isSuccess, elementId = "status") {
@@ -57,7 +57,7 @@ async function handleSubmit(event) {
         password: password,
       }),
       mode: "cors",
-      credentials: "same-origin"
+      credentials: "include"
     });
 
     const data = await response.json();

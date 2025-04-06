@@ -13,49 +13,21 @@ const otpStore = new Map();
 
 // Middleware
 app.use(express.json());
-
-// CORS middleware
-app.use((req, res, next) => {
-  // Handle preflight requests
-  if (req.method === 'OPTIONS') {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS');
-    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
-    res.header('Access-Control-Allow-Credentials', 'true');
-    return res.status(200).json({});
-  }
-  
-  // Set headers for actual requests
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
-  res.header('Access-Control-Allow-Credentials', 'true');
-  
-  next();
-});
-
-// Token verification middleware
-const verifyToken = (req, res, next) => {
-  const token = req.headers.authorization?.split(' ')[1];
-  
-  if (!token) {
-    return res.status(401).json({
-      success: false,
-      error: 'No token provided'
-    });
-  }
-
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded;
-    next();
-  } catch (error) {
-    return res.status(401).json({
-      success: false,
-      error: 'Invalid token'
-    });
-  }
-};
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5500",
+      "http://127.0.0.1:5500",
+      "http://localhost:64807",
+      "http://localhost:3000",
+      "http://127.0.0.1:59654",
+      "https://voter-verification-frontend.onrender.com",
+      "https://voter-verification-backend.onrender.com",
+    ],
+    methods: ["GET", "POST"],
+    credentials: true,
+  })
+);
 
 // Fast2SMS API configuration
 const FAST2SMS_API_KEY = process.env.FAST2SMS_API_KEY;
@@ -70,6 +42,29 @@ function generateOTP() {
   return Math.floor(100000 + Math.random() * 900000).toString();
 }
 
+// Verify JWT token middleware
+function verifyToken(req, res, next) {
+  const authHeader = req.headers.authorization;
+  if (!authHeader) {
+    return res.status(401).json({
+      success: false,
+      error: "No token provided",
+    });
+  }
+
+  const token = authHeader.split(" ")[1];
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    req.user = decoded;
+    next();
+  } catch (error) {
+    return res.status(401).json({
+      success: false,
+      error: "Invalid token",
+    });
+  }
+}
+
 // Health check endpoint
 app.get("/", async (req, res) => {
   try {
@@ -79,8 +74,8 @@ app.get("/", async (req, res) => {
       status: "ok",
       message: "Server is running!",
       firestore: "connected",
-      projectId: process.env.FIREBASE_CONFIG
-        ? JSON.parse(process.env.FIREBASE_CONFIG).project_id
+      projectId: process.env.GOOGLE_CREDENTIALS
+        ? JSON.parse(process.env.GOOGLE_CREDENTIALS).project_id
         : "not-set",
     });
   } catch (error) {

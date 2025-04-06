@@ -3,12 +3,6 @@ import { collection, query, where, getDocs, doc, updateDoc, serverTimestamp } fr
 
 console.log("Voter verification script loaded");
 
-// API endpoint - will be replaced during build
-const API_URL = window.API_URL;
-
-// Add immediate console log to verify script loading only in development mode
-console.log("Voter verification script loaded");
-
 // Function to verify voter ID directly through Firestore
 async function verifyVoterDirect(voterId) {
     try {
@@ -69,8 +63,8 @@ async function verifyVoterDirect(voterId) {
 // Function to verify voter ID through backend
 async function verifyVoterBackend(voterId) {
     try {
-        console.log("Making request to:", `${API_URL}/verify-voter`);
-        const response = await fetch(`${API_URL}/verify-voter`, {
+        console.log("Making request to:", `${config.apiUrl}/verify-voter`);
+        const response = await fetch(`${config.apiUrl}/verify-voter`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
