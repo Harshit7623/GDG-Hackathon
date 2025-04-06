@@ -1,8 +1,8 @@
 // API endpoint - will be replaced during build
-const API_URL = window.API_URL || "http://localhost:5001";
+const API_URL = window.API_URL || "https://gdg-hackathon-9574-git-main-harshits-projects-a26674e1.vercel.app";
 
 // Add immediate console log to verify script loading
-console.log("Login script loaded with API URL:", API_URL);
+console.log("Login script loaded");
 
 // Function to show status messages
 function showStatus(message, isSuccess, elementId = "status") {
