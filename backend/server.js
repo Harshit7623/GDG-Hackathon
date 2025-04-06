@@ -13,24 +13,31 @@ const otpStore = new Map();
 
 // Middleware
 app.use(express.json());
-app.use(
-  cors({
-    origin: [
-      "http://localhost:5500",
-      "http://127.0.0.1:5500",
-      "http://localhost:64807",
-      "http://localhost:3000",
-      "http://127.0.0.1:59654",
-      "https://voter-verification-frontend.onrender.com",
-      "https://voter-verification-backend.onrender.com",
-      "https://gdg-hackathon-5j1q2puni-harshits-projects-a26674e1.vercel.app",
-      "https://gdg-hackathon-35mmd6jo8-harshits-projects-a26674e1.vercel.app"
-    ],
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true,
-    allowedHeaders: ["Content-Type", "Authorization"]
-  })
-);
+
+app.use((req, res, next) => {
+  // Enable CORS for all origins
+  res.header('Access-Control-Allow-Origin', '*');
+  // Add headers
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  // Add methods
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  // Handle preflight requests
+  if (req.method === 'OPTIONS') {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+    return res.status(200).json({});
+  }
+  next();
+});
+
+app.use(cors({
+  origin: true,
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  exposedHeaders: ['Content-Length', 'X-Foo', 'X-Bar']
+}));
 
 // Fast2SMS API configuration
 const FAST2SMS_API_KEY = process.env.FAST2SMS_API_KEY;
