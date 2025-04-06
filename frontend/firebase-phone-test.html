@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firebase Phone Auth Test</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-gray-100">
+    <div class="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-lg">
+        <h1 class="text-2xl font-bold mb-4">Firebase Phone Auth Test</h1>
+        
+        <div class="mb-4">
+            <label for="phone" class="block text-sm font-medium text-gray-700">Phone Number (with country code)</label>
+            <input type="tel" id="phone" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" placeholder="+1234567890">
+        </div>
+        
+        <div id="recaptcha-container" class="mb-4"></div>
+        
+        <button id="sendOtpBtn" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors">Send OTP</button>
+        
+        <div id="otpSection" class="mt-4 hidden">
+            <div class="mb-4">
+                <label for="otp" class="block text-sm font-medium text-gray-700">Enter OTP</label>
+                <input type="text" id="otp" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" placeholder="123456">
+            </div>
+            
+            <button id="verifyOtpBtn" class="w-full bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition-colors">Verify OTP</button>
+        </div>
+        
+        <div id="status" class="mt-4 p-3 hidden"></div>
+    </div>
+    
+    <script type="module">
+        // Import Firebase modules
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        
+        // Your Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDaQJIjo8i2fPVN7Zg_abxklra3_qqvCEg",
+            authDomain: "modern-voting-verification.firebaseapp.com",
+            projectId: "modern-voting-verification",
+            storageBucket: "modern-voting-verification.firebasestorage.app",
+            messagingSenderId: "143426270111",
+            appId: "1:143426270111:web:e20a1c5380a0d8437e83aa",
+            measurementId: "G-ZG0KW81C4M"
+        };
+        
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        
+        let confirmationResult = null;
+        
+        // Function to show status messages
+        function showStatus(message, isSuccess) {
+            const statusDiv = document.getElementById('status');
+            statusDiv.textContent = message;
+            statusDiv.style.display = "block";
+            statusDiv.className = `mt-4 p-3 rounded ${isSuccess ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`;
+        }
+        
+        // Initialize reCAPTCHA verifier
+        window.onload = function() {
+            window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+                'size': 'normal',
+                'callback': (response) => {
+                    console.log("reCAPTCHA verified");
+                }
+            });
+            window.recaptchaVerifier.render();
+        };
+        
+        // Send OTP button click handler
+        document.getElementById('sendOtpBtn').addEventListener('click', async () => {
+            try {
+                const phoneNumber = document.getElementById('phone').value;
+                if (!phoneNumber) {
+                    showStatus("Please enter a phone number", false);
+                    return;
+                }
+                
+                // Send OTP via Firebase
+                confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, window.recaptchaVerifier);
+                console.log("OTP sent successfully");
+                
+                // Show OTP input section
+                document.getElementById('otpSection').classList.remove('hidden');
+                showStatus("OTP sent to your phone number!", true);
+            } catch (error) {
+                console.error("Error sending OTP:", error);
+                showStatus(error.message || "Failed to send OTP", false);
+            }
+        });
+        
+        // Verify OTP button click handler
+        document.getElementById('verifyOtpBtn').addEventListener('click', async () => {
+            try {
+                const otpCode = document.getElementById('otp').value;
+                if (!otpCode) {
+                    showStatus("Please enter the OTP", false);
+                    return;
+                }
+                
+                if (!confirmationResult) {
+                    showStatus("OTP session expired. Please request a new OTP", false);
+                    return;
+                }
+                
+                // Verify OTP
+                const result = await confirmationResult.confirm(otpCode);
+                const user = result.user;
+                console.log("Phone verified successfully!", user);
+                
+                showStatus(`Phone verified successfully! User ID: ${user.uid}`, true);
+            } catch (error) {
+                console.error("Error verifying OTP:", error);
+                showStatus(error.message || "Invalid OTP", false);
+            }
+        });
+    </script>
+</body>
+</html>

@@ -2,23 +2,53 @@
     "version": 2,
     "builds": [
         {
-            "src": "*.html",
+            "src": "**/*.html",
             "use": "@vercel/static"
         },
         {
-            "src": "*.js",
+            "src": "**/*.js",
+            "use": "@vercel/static"
+        },
+        {
+            "src": "**/*.css",
             "use": "@vercel/static"
         }
     ],
     "routes": [
         {
+            "src": "/",
+            "dest": "/index.html"
+        },
+        {
+            "src": "/dashboard",
+            "dest": "/dashboard.html"
+        },
+        {
+            "src": "/voter-verification",
+            "dest": "/voter-verification.html"
+        },
+        {
+            "src": "/login",
+            "dest": "/login.html"
+        },
+        {
+            "src": "/assets/(.*)",
+            "dest": "/assets/$1"
+        },
+        {
+            "src": "/css/(.*)",
+            "dest": "/css/$1"
+        },
+        {
+            "src": "/js/(.*)",
+            "dest": "/js/$1"
+        },
+        {
             "src": "/(.*)",
             "dest": "/$1"
         }
     ],
-    "build": {
-        "env": {
-            "API_URL": "https://your-backend-url.onrender.com"
-        }
+    "env": {
+        "API_URL": "@api_url"
     }
-} 
+}

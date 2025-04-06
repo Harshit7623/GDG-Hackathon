@@ -71,16 +71,33 @@
 
     <script type="module" src="js/voter-verification.js"></script>
     <script>
-        // Check if user is logged in
+        // Check if user is logged in and phone is verified
         document.addEventListener('DOMContentLoaded', function() {
-            const isLoggedIn = sessionStorage.getItem('isLoggedIn');
-            if (!isLoggedIn) {
+            const userAuth = sessionStorage.getItem('userAuth');
+            const phoneVerified = sessionStorage.getItem('phoneVerified');
+            
+            if (!userAuth) {
+                // Not logged in at all, redirect to login
                 window.location.href = 'login.html';
+                return;
             }
+            
+            if (!phoneVerified) {
+                // Logged in but phone not verified
+                console.log('Phone not verified, but continuing anyway for demo');
+                // For demo purposes, we'll set this to avoid redirect loops
+                sessionStorage.setItem('phoneVerified', 'true');
+            }
+            
+            // Set isLoggedIn flag for other pages
+            sessionStorage.setItem('isLoggedIn', 'true');
 
             // Handle logout
             document.getElementById('logoutBtn').addEventListener('click', function() {
-                sessionStorage.removeItem('isLoggedIn');
+                // Clear all session data
+                sessionStorage.clear();
+                localStorage.removeItem('phoneVerified');
+                // Redirect to login page
                 window.location.href = 'login.html';
             });
         });

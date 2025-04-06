@@ -1,0 +1,196 @@
+// API endpoint - will be replaced during build
+const API_URL = window.API_URL || "http://localhost:5001";
+
+// Add immediate console log to verify script loading
+console.log("Phone verification script loaded with API URL:", API_URL);
+
+let otpSent = false;
+
+// Function to show status messages
+function showStatus(message, isSuccess, elementId = "status") {
+  const statusDiv = document.getElementById(elementId);
+  if (!statusDiv) {
+    console.error(`Status div with id '${elementId}' not found!`);
+    return;
+  }
+
+  statusDiv.textContent = message;
+  statusDiv.style.display = "block";
+  statusDiv.className = `status ${isSuccess ? "success" : "error"}`;
+}
+
+// Handle form submission
+async function handleSubmit(event) {
+  event.preventDefault();
+
+  const phone = document.getElementById("phone").value;
+  const submitBtn = document.getElementById("verifyBtn");
+  const otpSection = document.getElementById("otpSection");
+  const otpInput = document.getElementById("otp");
+
+  // Get auth data
+  const auth = JSON.parse(sessionStorage.getItem("userAuth") || "{}");
+  if (!auth.email || !auth.token) {
+    window.location.href = "login.html";
+    return;
+  }
+
+  // Validate phone number format
+  const phoneRegex = /^\+?[1-9]\d{1,14}$/;
+  if (!phoneRegex.test(phone)) {
+    showStatus(
+      "Please enter a valid phone number with country code (e.g., +1234567890)",
+      false
+    );
+    return;
+  }
+
+  if (!otpSent) {
+    // Disable submit button and show loading state
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = `
+      <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+      </svg>
+      Sending OTP...
+    `;
+
+    try {
+      const response = await fetch(`${API_URL}/send-otp`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          Authorization: `Bearer ${auth.token}`,
+        },
+        body: JSON.stringify({
+          email: auth.email,
+          phone: phone,
+        }),
+        mode: "cors",
+        credentials: "include"
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        otpSent = true;
+        otpSection.classList.remove("hidden");
+        submitBtn.textContent = "Verify OTP";
+        showStatus("OTP sent to your phone number!", true);
+
+        // Store phone number temporarily
+        sessionStorage.setItem("tempPhone", phone);
+      } else {
+        showStatus(data.error || "Failed to send OTP", false);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      showStatus("Error connecting to server", false);
+    }
+
+    submitBtn.disabled = false;
+  } else {
+    const enteredOTP = otpInput.value;
+
+    // Validate OTP format
+    const otpRegex = /^\d{6}$/;
+    if (!otpRegex.test(enteredOTP)) {
+      showStatus("Please enter a valid 6-digit OTP", false);
+      return;
+    }
+
+    // Disable submit button and show loading state
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = `
+      <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+      </svg>
+      Verifying OTP...
+    `;
+
+    try {
+      // Get stored phone number
+      const storedPhone = sessionStorage.getItem("tempPhone");
+      if (!storedPhone) {
+        showStatus("Phone number not found. Please try again.", false);
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Verify OTP";
+        return;
+      }
+
+      const response = await fetch(`${API_URL}/verify-otp`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          Authorization: `Bearer ${auth.token}`,
+        },
+        body: JSON.stringify({
+          email: auth.email,
+          phone: storedPhone,
+          otp: enteredOTP,
+        }),
+        mode: "cors",
+        credentials: "include"
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        showStatus("Phone verification successful! Redirecting...", true);
+        
+        // Store verification status
+        sessionStorage.setItem("phoneVerified", "true");
+        
+        // Redirect to voter verification page
+        setTimeout(() => {
+          window.location.href = "voter-verification.html";
+        }, 1500);
+      } else {
+        showStatus(data.error || "Invalid OTP. Please try again.", false);
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Verify OTP";
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      showStatus("Error connecting to server", false);
+      submitBtn.disabled = false;
+      submitBtn.textContent = "Verify OTP";
+    }
+  }
+}
+
+// Wait for DOM to be fully loaded
+document.addEventListener("DOMContentLoaded", () => {
+  console.log("DOM loaded, setting up event handlers...");
+
+  // Check authentication status
+  const auth = JSON.parse(sessionStorage.getItem("userAuth") || "{}");
+  if (!auth.email || !auth.token) {
+    window.location.href = "login.html";
+    return;
+  }
+
+  // Check if phone is already verified
+  if (sessionStorage.getItem("phoneVerified") === "true") {
+    window.location.href = "voter-verification.html";
+    return;
+  }
+
+  // Form handler
+  const verificationForm = document.getElementById("phoneVerificationForm");
+  if (!verificationForm) {
+    console.error("Phone verification form not found!");
+    return;
+  }
+
+  console.log("Phone verification form found, adding submit handler...");
+
+  // Add submit event listener to the form
+  verificationForm.addEventListener("submit", handleSubmit);
+
+  console.log("Event listeners attached successfully");
+});

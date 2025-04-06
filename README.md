@@ -1,10 +1,11 @@
 # Modern Voter Verification System 🗳️
 
-A secure and efficient voter verification system built for the Google Hackathon, leveraging Firebase and modern web technologies.
+A secure and efficient voter verification system built for the Google Developer Group Hackathon 2024, leveraging Firebase and modern web technologies. This system enables election officials to verify voter identities through a multi-step verification process.
 
 ## 🌟 Features
 
 - **Secure Authentication**
+  - JWT-based authentication system
   - Phone number verification with OTP
   - Firebase Authentication integration
   - Session management
@@ -76,21 +77,30 @@ A secure and efficient voter verification system built for the Google Hackathon,
    npm start
    ```
 
-## 📱 Prototype Demo
+## 📱 Demo Mode
 
-Visit our live demo: [Demo Link]
+The application includes a demo mode that allows testing without sending actual SMS messages:
 
 ### Test Credentials
-- Phone Number: [Test Phone Number]
-- Voter ID: DL10001
+- Email: demo@example.com
+- Password: demo123
+
+### Demo Flow
+1. Login with the demo credentials
+2. Enter any phone number on the verification page
+3. The OTP will be displayed on screen (in a modal) instead of being sent via SMS
+4. Enter the OTP to complete verification
+5. Proceed to voter ID verification
 
 ## 🔒 Security Features
 
-- Secure phone number verification
+- Secure phone number verification with OTP
+- JWT-based authentication
 - Encrypted data transmission
 - Protected API endpoints
-- Rate limiting
-- Input validation
+- Rate limiting and attempt tracking
+- Input validation and sanitization
+- Session management
 
 ## 🎯 Future Enhancements
 
