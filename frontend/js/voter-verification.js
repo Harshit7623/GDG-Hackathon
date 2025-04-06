@@ -60,6 +60,32 @@ async function verifyVoterDirect(voterId) {
     }
 }
 
+// Function to verify voter ID through backend
+async function verifyVoterBackend(voterId) {
+    try {
+        console.log("Making request to:", `${config.apiUrl}/verify-voter`);
+        const response = await fetch(`${config.apiUrl}/verify-voter`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ voterId })
+        });
+
+        const data = await response.json();
+        console.log("Backend response:", data);
+
+        if (!response.ok) {
+            throw new Error(data.error || 'Verification failed');
+        }
+
+        return data;
+    } catch (error) {
+        console.error("Error verifying voter:", error);
+        throw error;
+    }
+}
+
 // Function to handle form submission
 async function handleSubmit(e) {
     e.preventDefault();
