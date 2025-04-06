@@ -23,9 +23,11 @@ app.use(
       "http://127.0.0.1:59654",
       "https://voter-verification-frontend.onrender.com",
       "https://voter-verification-backend.onrender.com",
+      "https://gdg-hackathon-5j1q2puni-harshits-projects-a26674e1.vercel.app"
     ],
-    methods: ["GET", "POST"],
+    methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
+    allowedHeaders: ["Content-Type", "Authorization"]
   })
 );
 
