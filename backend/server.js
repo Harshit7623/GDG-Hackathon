@@ -14,7 +14,8 @@ const otpStore = new Map();
 // Middleware
 app.use(express.json());
 
-app.use((req, res, next) => {
+// Custom CORS middleware
+const customCORS = (req, res, next) => {
   // Get the origin from the request
   const origin = req.headers.origin;
   
@@ -38,37 +39,33 @@ app.use((req, res, next) => {
   }
   
   next();
-});
+};
 
-// Then add the cors middleware with specific origins
-app.use(cors({
-  origin: function(origin, callback) {
-    // Allow requests with no origin (like mobile apps, curl requests)
-    if (!origin) return callback(null, true);
-    
-    const allowedOrigins = [
-      "http://localhost:5500",
-      "http://127.0.0.1:5500",
-      "http://localhost:64807",
-      "http://localhost:3000",
-      "http://127.0.0.1:59654",
-      "https://voter-verification-frontend.onrender.com",
-      "https://voter-verification-backend.onrender.com",
-      "https://gdg-hackathon-5j1q2puni-harshits-projects-a26674e1.vercel.app",
-      "https://gdg-hackathon-35mmd6jo8-harshits-projects-a26674e1.vercel.app",
-      "https://gdg-hackathon-9574-git-main-harshits-projects-a26674e1.vercel.app"
-    ];
-    
-    if (allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
-}));
+// Apply custom CORS middleware
+app.use(customCORS);
+
+// Token verification middleware
+const verifyToken = (req, res, next) => {
+  const token = req.headers.authorization?.split(' ')[1];
+  
+  if (!token) {
+    return res.status(401).json({
+      success: false,
+      error: 'No token provided'
+    });
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded;
+    next();
+  } catch (error) {
+    return res.status(401).json({
+      success: false,
+      error: 'Invalid token'
+    });
+  }
+};
 
 // Fast2SMS API configuration
 const FAST2SMS_API_KEY = process.env.FAST2SMS_API_KEY;
@@ -81,29 +78,6 @@ const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
 // Generate OTP
 function generateOTP() {
   return Math.floor(100000 + Math.random() * 900000).toString();
-}
-
-// Verify JWT token middleware
-function verifyToken(req, res, next) {
-  const authHeader = req.headers.authorization;
-  if (!authHeader) {
-    return res.status(401).json({
-      success: false,
-      error: "No token provided",
-    });
-  }
-
-  const token = authHeader.split(" ")[1];
-  try {
-    const decoded = jwt.verify(token, JWT_SECRET);
-    req.user = decoded;
-    next();
-  } catch (error) {
-    return res.status(401).json({
-      success: false,
-      error: "Invalid token",
-    });
-  }
 }
 
 // Health check endpoint

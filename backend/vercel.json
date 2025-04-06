@@ -1,6 +1,6 @@
-// Parse the Firebase config from environment variable
 
-const firebaseConfig = JSON.parse(process.env.FIREBASE_CONFIG);{
+
+{
   "version": 2,
   "builds": [
     {
