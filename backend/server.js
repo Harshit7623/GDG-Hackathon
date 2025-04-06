@@ -15,28 +15,59 @@ const otpStore = new Map();
 app.use(express.json());
 
 app.use((req, res, next) => {
-  // Enable CORS for all origins
-  res.header('Access-Control-Allow-Origin', '*');
+  // Get the origin from the request
+  const origin = req.headers.origin;
+  
+  // Allow specific origins instead of wildcard
+  if (origin) {
+    res.header('Access-Control-Allow-Origin', origin);
+  }
+  
+  // Allow credentials
+  res.header('Access-Control-Allow-Credentials', 'true');
+  
   // Add headers
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  
   // Add methods
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  
   // Handle preflight requests
   if (req.method === 'OPTIONS') {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
     return res.status(200).json({});
   }
+  
   next();
 });
 
+// Then add the cors middleware with specific origins
 app.use(cors({
-  origin: true,
+  origin: function(origin, callback) {
+    // Allow requests with no origin (like mobile apps, curl requests)
+    if (!origin) return callback(null, true);
+    
+    const allowedOrigins = [
+      "http://localhost:5500",
+      "http://127.0.0.1:5500",
+      "http://localhost:64807",
+      "http://localhost:3000",
+      "http://127.0.0.1:59654",
+      "https://voter-verification-frontend.onrender.com",
+      "https://voter-verification-backend.onrender.com",
+      "https://gdg-hackathon-5j1q2puni-harshits-projects-a26674e1.vercel.app",
+      "https://gdg-hackathon-35mmd6jo8-harshits-projects-a26674e1.vercel.app",
+      "https://gdg-hackathon-9574-git-main-harshits-projects-a26674e1.vercel.app"
+    ];
+    
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
-  exposedHeaders: ['Content-Length', 'X-Foo', 'X-Bar']
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
 
 // Fast2SMS API configuration

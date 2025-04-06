@@ -57,7 +57,7 @@ async function handleSubmit(event) {
         password: password,
       }),
       mode: "cors",
-      credentials: "include"
+      credentials: "same-origin"
     });
 
     const data = await response.json();
