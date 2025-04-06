@@ -14,35 +14,25 @@ const otpStore = new Map();
 // Middleware
 app.use(express.json());
 
-// Custom CORS middleware
-const customCORS = (req, res, next) => {
-  // Get the origin from the request
-  const origin = req.headers.origin;
-  
-  // Allow specific origins instead of wildcard
-  if (origin) {
-    res.header('Access-Control-Allow-Origin', origin);
-  }
-  
-  // Allow credentials
-  res.header('Access-Control-Allow-Credentials', 'true');
-  
-  // Add headers
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-  
-  // Add methods
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  
+// CORS middleware
+app.use((req, res, next) => {
   // Handle preflight requests
   if (req.method === 'OPTIONS') {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+    res.header('Access-Control-Allow-Credentials', 'true');
     return res.status(200).json({});
   }
   
+  // Set headers for actual requests
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  
   next();
-};
-
-// Apply custom CORS middleware
-app.use(customCORS);
+});
 
 // Token verification middleware
 const verifyToken = (req, res, next) => {
