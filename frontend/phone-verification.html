@@ -10,9 +10,22 @@
     />
     <link rel="stylesheet" href="css/styles.css" />
   </head>
-  <body class="bg-gray-100 min-h-screen flex items-center justify-center">
+  <body class="bg-gray-100 min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg fixed top-0 left-0 right-0 z-10">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <span class="text-2xl font-bold text-blue-600">VoteVerify</span>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="#" id="homeBtn" class="px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-700 text-white rounded-lg shadow-md hover:from-blue-600 hover:to-blue-800 transition-all transform hover:scale-105 flex items-center"><svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>Home</a>
+                </div>
+            </div>
+        </div>
+    </nav>
     <!-- Main Content -->
-    <div class="w-full max-w-md mx-auto px-4">
+    <div class="w-full max-w-md mx-auto px-4 pt-24 pb-8">
       <div class="bg-white rounded-lg shadow-lg p-8">
         <div class="text-center mb-8">
           <h2 class="text-3xl font-bold text-gray-800 mb-2">
@@ -36,9 +49,10 @@
               id="phone"
               name="phone"
               required
-              placeholder="Enter your phone number (e.g., +1234567890)"
-              pattern="^\+?[1-9]\d{1,14}$"
-              title="Please enter a valid phone number with country code (e.g., +1234567890)"
+              placeholder="Enter your phone no. with country code (e.g., 919023456789)"
+              pattern="^[0-9]{12}$"
+              maxlength="12"
+              title="Please enter exactly 12 digits for your phone number"
               class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
             />
           </div>
@@ -91,5 +105,25 @@
     </footer>
 
     <script src="js/phone-verification.js"></script>
+    <script>
+      // Handle page refresh
+      if (performance.navigation.type === 1) {
+        // This is a page refresh - redirect to home
+        sessionStorage.clear();
+        localStorage.removeItem('phoneVerified');
+        window.location.href = 'index.html';
+      }
+      
+      // Handle home button click
+      document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('homeBtn').addEventListener('click', function() {
+          // Clear all session data
+          sessionStorage.clear();
+          localStorage.removeItem('phoneVerified');
+          // Redirect to home page
+          window.location.href = 'index.html';
+        });
+      });
+    </script>
   </body>
 </html>

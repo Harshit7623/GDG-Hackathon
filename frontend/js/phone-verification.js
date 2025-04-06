@@ -84,6 +84,13 @@ window.addEventListener('DOMContentLoaded', () => {
             
             const submitBtn = form.querySelector("button[type='submit']");
             const phone = form.phone.value;
+            
+            // Validate phone number is exactly 12 digits
+            if (!/^[0-9]{12}$/.test(phone)) {
+                showStatus("Please enter exactly 12 digits for your phone number", false);
+                submitBtn.disabled = false;
+                return;
+            }
             const otp = form.otp?.value;
             
             if (!otpSent) {

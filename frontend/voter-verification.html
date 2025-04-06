@@ -7,16 +7,38 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
 </head>
-<body class="bg-gray-100">
+<body class="bg-gray-100 min-h-screen">
+    <!-- Main Content -->
+    <div class="pt-24 pb-8 px-4 max-w-7xl mx-auto">
+    
+    <!-- Demo Info Section -->
+    <div class="bg-white p-6 rounded-lg shadow-md mb-6">
+        <h2 class="text-center text-2xl font-bold mb-4">Demo Information</h2>
+        <div class="space-y-4">
+            <div class="bg-blue-50 p-4 rounded-md">
+                <p class="text-blue-800 font-semibold">Demo Voter IDs:</p>
+                <p class="text-blue-600">Range: DL10001 to DL10050</p>
+            </div>
+            <div class="bg-blue-50 p-4 rounded-md">
+                <p class="text-blue-800 font-semibold">Verification Status:</p>
+                <ul class="list-disc list-inside text-blue-600">
+                    <li>✅ Already Verified - for previously verified voters</li>
+                    <li>✅ Verified Successfully - for new verifications</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
     <!-- Navigation -->
-    <nav class="bg-white shadow-lg">
+    <nav class="bg-white shadow-lg fixed top-0 left-0 right-0 z-10">
         <div class="max-w-7xl mx-auto px-4">
             <div class="flex justify-between h-16">
                 <div class="flex items-center">
                     <span class="text-2xl font-bold text-blue-600">VoteVerify</span>
                 </div>
                 <div class="flex items-center space-x-4">
-                    <a href="dashboard.html" class="text-gray-600 hover:text-blue-600 transition-colors">Dashboard</a>
+                    <a href="#" id="homeBtn" class="px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-700 text-white rounded-lg shadow-md hover:from-blue-600 hover:to-blue-800 transition-all transform hover:scale-105 flex items-center"><svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>Home</a>
+                    <a href="dashboard.html" class="px-4 py-2 bg-gradient-to-r from-purple-500 to-purple-700 text-white rounded-lg shadow-md hover:from-purple-600 hover:to-purple-800 transition-all transform hover:scale-105 flex items-center"><svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>Dashboard</a>
                     <button id="logoutBtn" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition-colors">
                         Logout
                     </button>
@@ -25,8 +47,8 @@
         </div>
     </nav>
 
-    <!-- Main Content -->
-    <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+    <!-- Voter Verification Form -->
+    <main class="max-w-7xl mx-auto">
         <div class="px-4 py-6 sm:px-0">
             <div class="bg-white rounded-lg shadow p-6">
                 <h1 class="text-2xl font-bold text-gray-900 mb-4">Voter Verification</h1>
@@ -68,9 +90,18 @@
             </div>
         </div>
     </footer>
+    </div>
 
     <script type="module" src="js/voter-verification.js"></script>
     <script>
+        // Handle page refresh
+        if (performance.navigation.type === 1) {
+            // This is a page refresh - redirect to home
+            sessionStorage.clear();
+            localStorage.removeItem('phoneVerified');
+            window.location.href = 'index.html';
+        }
+        
         // Check if user is logged in and phone is verified
         document.addEventListener('DOMContentLoaded', function() {
             const userAuth = sessionStorage.getItem('userAuth');
@@ -83,10 +114,9 @@
             }
             
             if (!phoneVerified) {
-                // Logged in but phone not verified
-                console.log('Phone not verified, but continuing anyway for demo');
-                // For demo purposes, we'll set this to avoid redirect loops
-                sessionStorage.setItem('phoneVerified', 'true');
+                // Logged in but phone not verified, redirect to phone verification
+                window.location.href = 'phone-verification.html';
+                return;
             }
             
             // Set isLoggedIn flag for other pages
@@ -100,7 +130,16 @@
                 // Redirect to login page
                 window.location.href = 'login.html';
             });
+            
+            // Handle home button click
+            document.getElementById('homeBtn').addEventListener('click', function() {
+                // Clear all session data
+                sessionStorage.clear();
+                localStorage.removeItem('phoneVerified');
+                // Redirect to home page
+                window.location.href = 'index.html';
+            });
         });
     </script>
 </body>
-</html> 
+</html>

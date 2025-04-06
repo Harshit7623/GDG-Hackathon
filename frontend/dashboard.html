@@ -16,7 +16,8 @@
                     <span class="text-2xl font-bold text-blue-600">VoteVerify</span>
                 </div>
                 <div class="flex items-center space-x-4">
-                    <a href="voter-verification.html" class="text-gray-600 hover:text-blue-600 transition-colors">Verify Voter</a>
+                    <a href="#" id="homeBtn" class="px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-700 text-white rounded-lg shadow-md hover:from-blue-600 hover:to-blue-800 transition-all transform hover:scale-105 flex items-center"><svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>Home</a>
+                    <a href="voter-verification.html" class="px-4 py-2 bg-gradient-to-r from-green-500 to-green-700 text-white rounded-lg shadow-md hover:from-green-600 hover:to-green-800 transition-all transform hover:scale-105 flex items-center"><svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>Verify Voter</a>
                     <button id="logoutBtn" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition-colors">
                         Logout
                     </button>
@@ -134,7 +135,7 @@
     <footer class="bg-white mt-auto">
         <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 md:flex md:items-center md:justify-between lg:px-8">
             <div class="flex justify-center space-x-6 md:order-2">
-                <a href="https://github.com/yourusername/voter-verification" class="text-gray-400 hover:text-gray-500">
+                <a href="https://github.com/Harshit7623/GDG-Hackathon.git" class="text-gray-400 hover:text-gray-500">
                     <span class="sr-only">GitHub</span>
                     <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
                         <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.91-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd"/>
@@ -150,13 +151,33 @@
     </footer>
 
     <script>
+        // Handle page refresh
+        if (performance.navigation.type === 1) {
+            // This is a page refresh - redirect to home
+            sessionStorage.clear();
+            localStorage.removeItem('phoneVerified');
+            window.location.href = 'index.html';
+        }
+        
         // Check if user is logged in
         document.addEventListener('DOMContentLoaded', function() {
-            const isLoggedIn = sessionStorage.getItem('isLoggedIn');
-            if (!isLoggedIn) {
+            const userAuth = sessionStorage.getItem('userAuth');
+            const phoneVerified = sessionStorage.getItem('phoneVerified');
+            
+            if (!userAuth) {
+                // Not logged in at all, redirect to login
                 window.location.href = 'login.html';
                 return;
             }
+            
+            if (!phoneVerified) {
+                // Logged in but phone not verified, redirect to phone verification
+                window.location.href = 'phone-verification.html';
+                return;
+            }
+            
+            // Set isLoggedIn flag for other pages
+            sessionStorage.setItem('isLoggedIn', 'true');
 
             // Get verification status
             const verificationStatus = JSON.parse(sessionStorage.getItem('verificationStatus'));
@@ -192,9 +213,20 @@
 
             // Handle logout
             document.getElementById('logoutBtn').addEventListener('click', function() {
-                sessionStorage.removeItem('isLoggedIn');
-                sessionStorage.removeItem('verificationStatus');
+                // Clear all session data
+                sessionStorage.clear();
+                localStorage.removeItem('phoneVerified');
+                // Redirect to login page
                 window.location.href = 'login.html';
+            });
+            
+            // Handle home button click
+            document.getElementById('homeBtn').addEventListener('click', function() {
+                // Clear all session data
+                sessionStorage.clear();
+                localStorage.removeItem('phoneVerified');
+                // Redirect to home page
+                window.location.href = 'index.html';
             });
         });
     </script>
