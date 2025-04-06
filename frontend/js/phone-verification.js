@@ -1,66 +1,33 @@
 // API endpoint - will be replaced during build
-const API_URL = window.API_URL || "http://localhost:5001";
+const API_URL = window.API_URL || "https://gdg-hackathon-9574-qe03q33rv-harshits-projects-a26674e1.vercel.app";
 
-// Add immediate console log to verify script loading only in development mode
-if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-    console.log("Phone verification script loaded in demo mode");
-}
+// Add immediate console log to verify script loading
+console.log("Phone verification script loaded");
 
 let otpSent = false;
 
 // Function to show status messages
 function showStatus(message, isSuccess, elementId = "status") {
-    const element = document.getElementById(elementId);
-    element.textContent = message;
-    element.style.display = "block";
-    element.className = `mt-4 p-3 rounded ${isSuccess ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`;
+  const statusDiv = document.getElementById(elementId);
+  if (!statusDiv) {
+    console.error(`Status div with id '${elementId}' not found!`);
+    return;
+  }
+
+  statusDiv.textContent = message;
+  statusDiv.style.display = "block";
+  statusDiv.className = `status ${isSuccess ? "success" : "error"}`;
 }
 
-// Show OTP in a modal
-function showOTPModal(otp) {
-    // Create modal element if it doesn't exist
-    let modal = document.getElementById('otpModal');
-    if (!modal) {
-        modal = document.createElement('div');
-        modal.id = 'otpModal';
-        modal.className = 'fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50';
-        modal.innerHTML = `
-            <div class="bg-white p-8 rounded-lg shadow-xl w-96 text-center">
-                <h2 class="text-2xl font-bold mb-4">Your OTP</h2>
-                <div id="otpDisplay" class="text-4xl font-bold mb-6 bg-blue-100 p-4 rounded-lg text-blue-800"></div>
-                <p class="text-gray-600 mb-6">Please enter this OTP in the verification field.</p>
-                <button id="closeModal" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">
-                    Close
-                </button>
-            </div>
-        `;
-        document.body.appendChild(modal);
-    }
+// Handle form submission
+async function handleSubmit(event) {
+  event.preventDefault();
 
-    // Update OTP display
-    document.getElementById('otpDisplay').textContent = otp;
+  const phone = document.getElementById("phone").value;
+  const submitBtn = document.getElementById("verifyBtn");
+  const otpSection = document.getElementById("otpSection");
+  const otpInput = document.getElementById("otp");
 
-    // Show modal
-    modal.style.display = 'flex';
-
-    // Add close button handler
-    const closeModalBtn = document.getElementById('closeModal');
-    if (closeModalBtn) {
-        closeModalBtn.addEventListener('click', () => {
-            modal.style.display = 'none';
-        });
-    }
-
-    // Close on ESC key
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-            modal.style.display = 'none';
-        }
-    });
-}
-
-// Wait for DOM to be fully loaded
-window.addEventListener('DOMContentLoaded', () => {
     // Get auth data
     const auth = JSON.parse(sessionStorage.getItem("userAuth") || "{}");
     if (!auth.email || !auth.token) {
