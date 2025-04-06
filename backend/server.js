@@ -79,8 +79,8 @@ app.get("/", async (req, res) => {
       status: "ok",
       message: "Server is running!",
       firestore: "connected",
-      projectId: process.env.GOOGLE_CREDENTIALS
-        ? JSON.parse(process.env.GOOGLE_CREDENTIALS).project_id
+      projectId: process.env.FIREBASE_CONFIG
+        ? JSON.parse(process.env.FIREBASE_CONFIG).project_id
         : "not-set",
     });
   } catch (error) {
