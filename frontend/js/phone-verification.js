@@ -117,7 +117,7 @@ window.addEventListener('DOMContentLoaded', () => {
                             phone: phone,
                         }),
                         mode: "cors",
-                        credentials: "include"
+                        credentials: "same-origin"
                     });
 
                     const data = await response.json();
@@ -167,7 +167,7 @@ window.addEventListener('DOMContentLoaded', () => {
                             otp: otp,
                         }),
                         mode: "cors",
-                        credentials: "include"
+                        credentials: "same-origin"
                     });
 
                     const data = await response.json();
